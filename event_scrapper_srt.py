@@ -21,7 +21,7 @@ def main():
     details = []
     gancio_events = []
 
-    for event in events:
+    for event in reversed(events):
         try:
             with urllib.request.urlopen(event.url) as response:
                 html_content = response.read().decode('utf-8')
