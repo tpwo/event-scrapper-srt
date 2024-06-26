@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import urllib.parse
 import urllib.request
 from datetime import datetime
@@ -97,10 +98,14 @@ def extract_event_details(html_content: str) -> dict[str, object]:
         .find_all('p')
     )
     for dt in date_time_section:
-        date_str, time_str = dt.find('strong').text.strip(), dt.text.split()[-1]
-        dt_str = f'{date_str} {time_str}'
-        start_datetime = parse_polish_date(dt_str)
-        date_times.append(start_datetime)
+        try:
+            date_str, time_str = dt.find('strong').text.strip(), dt.text.split()[-1]
+        except AttributeError:
+            logging.warning(f'Failed to extract date and time from: {dt}')
+        else:
+            dt_str = f'{date_str} {time_str}'
+            start_datetime = parse_polish_date(dt_str)
+            date_times.append(start_datetime)
 
     return {
         'title': title,
