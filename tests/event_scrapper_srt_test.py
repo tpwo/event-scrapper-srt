@@ -34,14 +34,8 @@ def test_get_events_from_sitemap():
 @pytest.mark.parametrize(
     ('file', 'expected'),
     (
-        (
-            'example-event.html',
-            resources.example_event,
-        ),
-        (
-            'example-event-recurring.html',
-            resources.example_event_recurring,
-        ),
+        ('example-event.html', resources.example_event),
+        ('example-event-recurring.html', resources.example_event_recurring),
     ),
 )
 def test_extract_event_details(file, expected):
@@ -52,12 +46,7 @@ def test_extract_event_details(file, expected):
 
 @pytest.mark.parametrize(
     ('file', 'expected'),
-    (
-        (
-            'example-event-past.html',
-            resources.example_event_past,
-        ),
-    ),
+    (('example-event-past.html', resources.example_event_past),),
 )
 def test_extract_past_event_details(file, expected, caplog):
     html_content = pathlib.Path(f'testing/{file}').read_text()
