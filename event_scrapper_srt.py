@@ -83,9 +83,18 @@ def extract_event_details(html_content: str) -> dict[str, object]:
     title = soup.find('h1').text.strip()
 
     # Extract place details
-    place_section = soup.find_all('div', class_='col-md-6 mx-auto')[1]
-    place_name = place_section.find('h5').text.strip()
-    place_address = place_section.find('p').text.strip()
+    details_class = 'col-md-6 mx-auto'
+    details = soup.find_all('div', class_=details_class)
+    for detail in details:
+        if 'Gdzie?' in detail.text:
+            place_section_raw = detail.find('p').text
+            # For some reason each time the place value starts with
+            # backtick, so we strip it
+            place_section = place_section_raw.lstrip('`').strip()
+            place_name_raw, _, place_address_raw = place_section.partition(',')
+            place_name = place_name_raw.strip()
+            place_address = place_address_raw.strip()
+            break
 
     # Extract event dates and times
     date_times = []
@@ -112,6 +121,21 @@ def extract_event_details(html_content: str) -> dict[str, object]:
         'image_url': image_url,
         'date_times': date_times,
     }
+
+
+def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
+    details_class = 'col-md-6 mx-auto'
+    details = soup.find_all('div', class_=details_class)
+    place_header = 'Gdzie?'
+    for detail in details:
+        if place_header in detail.text:
+            place_section_raw = detail.find('p').text
+            # For some reason each time the place value starts with
+            # backtick, so we strip it
+            place_section = place_section_raw.lstrip('`').strip()
+            place_name_raw, _, place_address_raw = place_section.partition(',')
+            return place_name_raw.strip(), place_address_raw.strip()
+    raise ValueError(f'Place details not found in the provided HTML content: `{details}`')
 
 
 def get_description(soup: BeautifulSoup) -> str:
