@@ -79,12 +79,6 @@ def extract_event_details(html_content: str) -> dict[str, object]:
     # Extract event title
     title = soup.find('h1').text.strip()
 
-    # Extract event description
-    description_section = soup.find(
-        'div', class_='col-lg-6 justify-content-center d-flex flex-column ps-lg-5 pt-lg-0 pt-3'
-    )
-    description = description_section.find('p').decode_contents() if description_section else ''
-
     # Extract place details
     place_section = soup.find_all('div', class_='col-md-6 mx-auto')[1]
     place_name = place_section.find('h5').text.strip()
@@ -109,12 +103,20 @@ def extract_event_details(html_content: str) -> dict[str, object]:
 
     return {
         'title': title,
-        'description': description,
+        'description': get_description(soup),
         'place_name': place_name,
         'place_address': place_address,
         'image_url': image_url,
         'date_times': date_times,
     }
+
+
+def get_description(soup: BeautifulSoup) -> str:
+    html_class = 'col-lg-6 justify-content-center d-flex flex-column ps-lg-5 pt-lg-0 pt-3'
+    desc_section = soup.find('div', class_=html_class)
+    desc = desc_section.find('p').decode_contents().strip() if desc_section else ''
+    desc_formatted = ' '.join(desc.replace('\n', '').split())
+    return desc_formatted
 
 
 # Polish month names mapping
