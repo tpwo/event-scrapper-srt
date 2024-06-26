@@ -208,17 +208,17 @@ def prepare_gancio_event(
     date_times = event_details['date_times']
     assert isinstance(date_times, list)
     for event_date in date_times:
+        # Structure based on Gancio API
+        # https://gancio.org/dev/api#add-a-new-event
         data = {
             'title': event_details['title'],
             'description': event_details['description'],
             'place_name': event_details['place_name'],
             'place_address': event_details['place_address'],
-            'place_latitude': 0.0,  # Replace with actual latitude
-            'place_longitude': 0.0,  # Replace with actual longitude
-            'online_locations': json.dumps([]),  # Empty list for online locations
             'start_datetime': int(datetime.fromisoformat(event_date).timestamp()),
-            'multidate': 1,  # Assuming these are multidate events
-            'tags': json.dumps([]),  # Add relevant tags
+            # Assuming these are not multidate events
+            'multidate': 0,
+            'tags': json.dumps(['swing']),
         }
         if event_details['image_url']:
             assert isinstance(event_details['image_url'], str)
