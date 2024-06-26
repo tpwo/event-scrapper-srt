@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import urllib.parse
 import urllib.request
 from collections.abc import Callable
@@ -18,25 +19,28 @@ class Event(NamedTuple):
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
     xml_content = get_xml_content(sitemap_url)
     events = get_events(xml_content)
+    logging.info(f'Extracted {len(events)} events from the sitemap')
     details = []
-    gancio_events = []
+    # gancio_events = []
 
     for event in reversed(events):
-        try:
-            with urllib.request.urlopen(event.url) as response:
-                html_content = response.read().decode('utf-8')
-                event_details = extract_event_details(html_content)
-                details.append(event_details)
-                gancio_events.append(
-                    prepare_gancio_event(event_details=event_details, img_getter=get_image)
-                )
-        except urllib.error.HTTPError as e:
-            print(f"HTTPError: {e.code} - {e.read().decode('utf-8')}")
-        except urllib.error.URLError as e:
-            print(f'URLError: {e.reason}')
+        with urllib.request.urlopen(event.url) as response:
+            html_content = response.read().decode('utf-8')
+            event_details = extract_event_details(html_content)
+            details.append(event_details)
+            # gancio_events.append(
+            #     prepare_gancio_event(event_details=event_details, img_getter=get_image)
+            # )
+
+    logging.info(f'Extracted details for {len(details)} events')
+    os.makedirs('output', exist_ok=True)
+    with open('output/details.json', 'w') as file:
+        json.dump(details, file, indent=4)
+    logging.info('Saved event details to `output/details.json`')
 
 
 def get_xml_content(sitemap_url: str) -> bytes:
