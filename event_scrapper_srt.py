@@ -4,6 +4,7 @@ import json
 import logging
 import urllib.parse
 import urllib.request
+from collections.abc import Callable
 from datetime import datetime
 from typing import NamedTuple
 
@@ -29,7 +30,9 @@ def main() -> None:
                 html_content = response.read().decode('utf-8')
                 event_details = extract_event_details(html_content)
                 details.append(event_details)
-                gancio_events.append(prepare_gancio_event(event_details))
+                gancio_events.append(
+                    prepare_gancio_event(event_details=event_details, img_getter=get_image)
+                )
         except urllib.error.HTTPError as e:
             print(f"HTTPError: {e.code} - {e.read().decode('utf-8')}")
         except urllib.error.URLError as e:
@@ -144,7 +147,9 @@ def parse_polish_date(date_str: str) -> datetime:
     raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
 
 
-def prepare_gancio_event(event_details: dict[str, object]) -> dict[str, object]:
+def prepare_gancio_event(
+    event_details: dict[str, object], img_getter: Callable[[str], bytes]
+) -> dict[str, object]:
     date_times = event_details['date_times']
     assert isinstance(date_times, list)
     for event_date in date_times:
@@ -160,15 +165,16 @@ def prepare_gancio_event(event_details: dict[str, object]) -> dict[str, object]:
             'multidate': 1,  # Assuming these are multidate events
             'tags': json.dumps([]),  # Add relevant tags
         }
-
         if event_details['image_url']:
-            image_url = event_details['image_url']
-            assert isinstance(image_url, str)
-            image_response = urllib.request.urlopen(image_url)
-            image_data = image_response.read()
-            data['image'] = image_data
+            assert isinstance(event_details['image_url'], str)
+            data['image'] = img_getter(event_details['image_url'])
 
     return data
+
+
+def get_image(image_url: str) -> bytes:
+    image_response = urllib.request.urlopen(image_url)
+    return image_response.read()
 
 
 if __name__ == '__main__':
