@@ -25,7 +25,7 @@ def main() -> None:
     details = []
     # gancio_events = []
 
-    for event in reversed(get_events_from_sitemap(xml_content)):
+    for event in get_events_from_sitemap(xml_content):
         with urllib.request.urlopen(event.url) as response:
             html_content = response.read().decode('utf-8')
             event_details = extract_event_details(html_content)
@@ -56,22 +56,20 @@ def get_xml_content(sitemap_url: str) -> bytes:
 
 
 def get_events_from_sitemap(xml_content: bytes) -> list[Event]:
-    """Extracts event URLs and lastmod dates from the sitemap XML content."""
-    # Parse the XML content using lxml
+    """Extracts event URLs and lastmod dates from the sitemap XML content.
+
+    Sitemap displays the events from the oldest to the newest, so we
+    reverse the list at the end.
+    """
     root = etree.fromstring(xml_content)
 
-    # Extract the namespace from xsi:schemaLocation
     schema_location = root.attrib['{http://www.w3.org/2001/XMLSchema-instance}schemaLocation']
     schema_parts = schema_location.split()
-    namespace = schema_parts[0]  # Extract the namespace URL
-
     # Define the namespace dictionary for use in xpath
-    ns = {'ns': namespace}
+    ns = {'ns': schema_parts[0]}
 
-    # Find all <url> elements
     urls = root.xpath('//ns:url', namespaces=ns)
 
-    # Extract event details from each <url>
     events = []
     for url in urls:
         loc = url.xpath('ns:loc/text()', namespaces=ns)[0]
@@ -82,7 +80,7 @@ def get_events_from_sitemap(xml_content: bytes) -> list[Event]:
         events.append(event)
 
     logging.info(f'Extracted {len(events)} events from the sitemap')
-    return events
+    return list(reversed(events))
 
 
 def extract_event_details(html_content: str) -> dict[str, object]:
