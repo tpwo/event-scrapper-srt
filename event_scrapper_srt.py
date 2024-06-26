@@ -111,7 +111,7 @@ def extract_event_details(html_content: str) -> dict[str, object]:
         else:
             dt_str = f'{date_str} {time_str}'
             start_datetime = parse_polish_date(dt_str)
-            date_times.append(start_datetime)
+            date_times.append(start_datetime.isoformat())
 
     return {
         'title': title,
@@ -185,7 +185,7 @@ def prepare_gancio_event(
             'place_latitude': 0.0,  # Replace with actual latitude
             'place_longitude': 0.0,  # Replace with actual longitude
             'online_locations': json.dumps([]),  # Empty list for online locations
-            'start_datetime': int(event_date.timestamp()),
+            'start_datetime': int(datetime.fromisoformat(event_date).timestamp()),
             'multidate': 1,  # Assuming these are multidate events
             'tags': json.dumps([]),  # Add relevant tags
         }

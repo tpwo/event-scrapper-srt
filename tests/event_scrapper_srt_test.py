@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import pathlib
 
 import pytest
@@ -44,7 +43,7 @@ def test_get_events_from_sitemap():
                 'place_name': 'Studio Swing Revolution Trójmiasto',
                 'place_address': 'Łąkowa 35/38, Gdańsk',
                 'image_url': 'https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
-                'date_times': [datetime.datetime(2024, 7, 27, 15, 0)],
+                'date_times': ['2024-07-27T15:00:00'],
             },
         ),
         (
@@ -56,14 +55,14 @@ def test_get_events_from_sitemap():
                 'place_address': 'ul. Łąkowa 35/38',
                 'image_url': 'https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
                 'date_times': [
-                    datetime.datetime(2024, 7, 7, 23, 0),
-                    datetime.datetime(2024, 7, 14, 23, 0),
-                    datetime.datetime(2024, 7, 21, 23, 0),
-                    datetime.datetime(2024, 7, 28, 23, 0),
-                    datetime.datetime(2024, 8, 4, 23, 0),
-                    datetime.datetime(2024, 8, 11, 23, 0),
-                    datetime.datetime(2024, 8, 18, 23, 0),
-                    datetime.datetime(2024, 8, 25, 23, 0),
+                    '2024-07-07T23:00:00',
+                    '2024-07-14T23:00:00',
+                    '2024-07-21T23:00:00',
+                    '2024-07-28T23:00:00',
+                    '2024-08-04T23:00:00',
+                    '2024-08-11T23:00:00',
+                    '2024-08-18T23:00:00',
+                    '2024-08-25T23:00:00',
                 ],
             },
         ),
@@ -109,7 +108,7 @@ def test_extract_past_event_details(file, expected, caplog):
                 'place_name': 'Studio Swing Revolution Trójmiasto',
                 'place_address': 'Łąkowa 35/38, Gdańsk',
                 'image_url': 'https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
-                'date_times': [datetime.datetime(2024, 7, 27, 15, 0)],
+                'date_times': ['2024-07-27T15:00:00'],
             },
             {
                 'title': 'Lindy Hop dla początkujacych | intensywne warsztaty',
@@ -133,14 +132,14 @@ def test_extract_past_event_details(file, expected, caplog):
                 'place_address': 'ul. Łąkowa 35/38',
                 'image_url': 'https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
                 'date_times': [
-                    datetime.datetime(2024, 7, 7, 23, 0),
-                    datetime.datetime(2024, 7, 14, 23, 0),
-                    datetime.datetime(2024, 7, 21, 23, 0),
-                    datetime.datetime(2024, 7, 28, 23, 0),
-                    datetime.datetime(2024, 8, 4, 23, 0),
-                    datetime.datetime(2024, 8, 11, 23, 0),
-                    datetime.datetime(2024, 8, 18, 23, 0),
-                    datetime.datetime(2024, 8, 25, 23, 0),
+                    '2024-07-07T23:00:00',
+                    '2024-07-14T23:00:00',
+                    '2024-07-21T23:00:00',
+                    '2024-07-28T23:00:00',
+                    '2024-08-04T23:00:00',
+                    '2024-08-11T23:00:00',
+                    '2024-08-18T23:00:00',
+                    '2024-08-25T23:00:00',
                 ],
             },
             {
