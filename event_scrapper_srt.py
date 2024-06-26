@@ -37,9 +37,18 @@ def main() -> None:
             # )
 
     logging.info(f'Extracted details for {len(details)} events')
+    future_events: list[dict[str, object]] = []
+    for detail in details:
+        assert isinstance(detail['date_times'], list)
+        for date_time in detail['date_times']:
+            if datetime.fromisoformat(date_time) > datetime.now():
+                future_events.append(detail)
+                break
+    logging.info(f'{len(future_events)} of them are future events')
+
     os.makedirs('output', exist_ok=True)
-    with open('output/details.json', 'w') as file:
-        json.dump(details, file, indent=4)
+    with open(f'output/details_{datetime.now().isoformat()}.json', 'w', encoding='utf-8') as file:
+        json.dump(future_events, file, indent=4, ensure_ascii=False)
     logging.info('Saved event details to `output/details.json`')
 
 
