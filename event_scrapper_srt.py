@@ -15,7 +15,7 @@ class Event(NamedTuple):
     lastmod: str
 
 
-def main():
+def main() -> None:
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
     events = get_events(sitemap_url)
     details = []
@@ -34,7 +34,7 @@ def main():
             print(f'URLError: {e.reason}')
 
 
-def get_events(sitemap_url):
+def get_events(sitemap_url: str) -> list[Event]:
     # Fetch the XML content from the URL
     with urllib.request.urlopen(sitemap_url) as response:
         xml_content = response.read()
@@ -66,7 +66,7 @@ def get_events(sitemap_url):
     return events
 
 
-def extract_event_details(html_content):
+def extract_event_details(html_content: str) -> dict[str, object]:
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Extract image URL
@@ -109,8 +109,10 @@ def extract_event_details(html_content):
     }
 
 
-def prepare_gancio_event(event_details):
-    for event_date in event_details['date_times']:
+def prepare_gancio_event(event_details: dict[str, object]) -> dict[str, object]:
+    date_times = event_details['date_times']
+    assert isinstance(date_times, list)
+    for event_date in date_times:
         data = {
             'title': event_details['title'],
             'description': event_details['description'],
@@ -125,11 +127,13 @@ def prepare_gancio_event(event_details):
         }
 
         if event_details['image_url']:
-            image_response = urllib.request.urlopen(event_details['image_url'])
+            image_url = event_details['image_url']
+            assert isinstance(image_url, str)
+            image_response = urllib.request.urlopen(image_url)
             image_data = image_response.read()
             data['image'] = image_data
 
-        return data
+    return data
 
 
 if __name__ == '__main__':
