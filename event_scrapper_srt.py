@@ -35,11 +35,7 @@ def main() -> None:
     sitemap_elems = get_events_from_sitemap(xml_content)
     events = get_events(sitemap_elems)
     future_events = get_future_events(events)
-
-    os.makedirs('output', exist_ok=True)
-    with open(f'output/details_{datetime.now().isoformat()}.json', 'w', encoding='utf-8') as file:
-        json.dump(future_events, file, indent=4, ensure_ascii=False)
-    logging.info('Saved event details to `output/details.json`')
+    dump_events_to_json(future_events, folder='output')
 
 
 def get_xml_content(sitemap_url: str) -> bytes:
@@ -114,6 +110,14 @@ def get_future_events(events: list[Event]) -> list[Event]:
                 break
     logging.info(f'{len(future_events)} of {len(events)} are future events')
     return future_events
+
+
+def dump_events_to_json(events: list[Event], folder: str) -> None:
+    os.makedirs(folder, exist_ok=True)
+    filename = f'{folder}/events_{datetime.now().isoformat()}.json'
+    with open(filename, 'w', encoding='utf-8') as file:
+        json.dump(events, file, indent=4, ensure_ascii=False)
+    logging.info(f'Saved event details to `{filename}`')
 
 
 def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
