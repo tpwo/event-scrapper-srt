@@ -32,21 +32,16 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
     xml_content = get_xml_content(sitemap_url)
-    details = []
-    # gancio_events = []
 
+    events = []
     for event in get_events_from_sitemap(xml_content):
         with urllib.request.urlopen(event.url) as response:
             html_content = response.read().decode('utf-8')
-            event_details = extract_event_details(html_content)
-            details.append(event_details)
-            # gancio_events.append(
-            #     prepare_gancio_event(event_details=event_details, img_getter=get_image)
-            # )
+            events.append(extract_event_details(html_content))
 
-    logging.info(f'Extracted details for {len(details)} events')
+    logging.info(f'Extracted details for {len(events)} events')
     future_events: list[Event] = []
-    for detail in details:
+    for detail in events:
         for date_time in detail.date_times:
             if datetime.fromisoformat(date_time) > datetime.now():
                 future_events.append(detail)
