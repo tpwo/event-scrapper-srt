@@ -28,3 +28,8 @@ def test_get_events_from_sitemap():
         ),
     ]
     assert actual == expected
+
+
+def test_extract_event_details():
+    html_content = pathlib.Path('testing/example-event.html').read_text()
+    event_scrapper_srt.extract_event_details(html_content=html_content)
