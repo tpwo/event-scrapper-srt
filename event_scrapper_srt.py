@@ -19,6 +19,15 @@ class SitemapElem(NamedTuple):
     lastmod: str
 
 
+class Event(NamedTuple):
+    title: str
+    description: str
+    place_name: str
+    place_address: str
+    image_url: str | None
+    date_times: list[str]
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
@@ -36,10 +45,9 @@ def main() -> None:
             # )
 
     logging.info(f'Extracted details for {len(details)} events')
-    future_events: list[dict[str, object]] = []
+    future_events: list[Event] = []
     for detail in details:
-        assert isinstance(detail['date_times'], list)
-        for date_time in detail['date_times']:
+        for date_time in detail.date_times:
             if datetime.fromisoformat(date_time) > datetime.now():
                 future_events.append(detail)
                 break
@@ -103,7 +111,7 @@ def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
     return days > max_age_days
 
 
-def extract_event_details(html_content: str) -> dict[str, object]:
+def extract_event_details(html_content: str) -> Event:
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Extract image URL
@@ -144,14 +152,14 @@ def extract_event_details(html_content: str) -> dict[str, object]:
             start_datetime = parse_polish_date(dt_str)
             date_times.append(start_datetime.isoformat())
 
-    return {
-        'title': title,
-        'description': get_description(soup),
-        'place_name': place_name,
-        'place_address': place_address,
-        'image_url': image_url,
-        'date_times': date_times,
-    }
+    return Event(
+        title=title,
+        description=get_description(soup),
+        place_name=place_name,
+        place_address=place_address,
+        image_url=image_url,
+        date_times=date_times,
+    )
 
 
 def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
@@ -203,26 +211,25 @@ def parse_polish_date(date_str: str) -> datetime:
 
 
 def prepare_gancio_event(
-    event_details: dict[str, object], img_getter: Callable[[str], bytes]
+    event_details: Event, img_getter: Callable[[str], bytes]
 ) -> dict[str, object]:
-    date_times = event_details['date_times']
-    assert isinstance(date_times, list)
+    date_times = event_details.date_times
     # Structure based on Gancio API
     # https://gancio.org/dev/api#add-a-new-event
     data = {
-        'title': event_details['title'],
-        'description': event_details['description'],
-        'place_name': event_details['place_name'],
-        'place_address': event_details['place_address'],
+        'title': event_details.title,
+        'description': event_details.description,
+        'place_name': event_details.place_name,
+        'place_address': event_details.place_address,
         'start_datetime': int(datetime.fromisoformat(date_times[0]).timestamp()),
         # Assuming these are not multidate events
         'multidate': 0,
         'tags': json.dumps(['swing']),
         'recurrent': {'days': date_times},
     }
-    if event_details['image_url']:
-        assert isinstance(event_details['image_url'], str)
-        data['image'] = img_getter(event_details['image_url'])
+    if event_details.image_url:
+        assert isinstance(event_details.image_url, str)
+        data['image'] = img_getter(event_details.image_url)
 
     return data
 
