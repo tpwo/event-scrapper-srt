@@ -17,7 +17,8 @@ class Event(NamedTuple):
 
 def main() -> None:
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
-    events = get_events(sitemap_url)
+    xml_content = get_xml_content(sitemap_url)
+    events = get_events(xml_content)
     details = []
     gancio_events = []
 
@@ -34,11 +35,12 @@ def main() -> None:
             print(f'URLError: {e.reason}')
 
 
-def get_events(sitemap_url: str) -> list[Event]:
-    # Fetch the XML content from the URL
+def get_xml_content(sitemap_url: str) -> bytes:
     with urllib.request.urlopen(sitemap_url) as response:
-        xml_content = response.read()
+        return response.read()
 
+
+def get_events(xml_content: bytes) -> list[Event]:
     # Parse the XML content using lxml
     root = etree.fromstring(xml_content)
 
