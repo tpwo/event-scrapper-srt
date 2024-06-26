@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import datetime
 import json
 import urllib.parse
 import urllib.request
+from datetime import datetime
 from typing import NamedTuple
 
 from bs4 import BeautifulSoup
@@ -98,7 +98,8 @@ def extract_event_details(html_content: str) -> dict[str, object]:
     )
     for dt in date_time_section:
         date_str, time_str = dt.find('strong').text.strip(), dt.text.split()[-1]
-        start_datetime = datetime.datetime.strptime(f'{date_str} {time_str}', '%d %B %Y %H:%M')
+        dt_str = f'{date_str} {time_str}'
+        start_datetime = parse_polish_date(dt_str)
         date_times.append(start_datetime)
 
     return {
@@ -109,6 +110,31 @@ def extract_event_details(html_content: str) -> dict[str, object]:
         'image_url': image_url,
         'date_times': date_times,
     }
+
+
+# Polish month names mapping
+MONTHS_PL = {
+    'stycznia': 1,
+    'lutego': 2,
+    'marca': 3,
+    'kwietnia': 4,
+    'maja': 5,
+    'czerwca': 6,
+    'lipca': 7,
+    'sierpnia': 8,
+    'września': 9,
+    'października': 10,
+    'listopada': 11,
+    'grudnia': 12,
+}
+
+
+def parse_polish_date(date_str: str) -> datetime:
+    for pl_month, month_num in MONTHS_PL.items():
+        if pl_month in date_str:
+            date_str = date_str.replace(pl_month, f'{month_num:02}')
+            return datetime.strptime(date_str, '%d %m %Y %H:%M')
+    raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
 
 
 def prepare_gancio_event(event_details: dict[str, object]) -> dict[str, object]:
