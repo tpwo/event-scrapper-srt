@@ -129,28 +129,13 @@ def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
 def extract_event_details(html_content: str) -> Event:
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # Extract image URL
     image_div = soup.find('div', class_='page-header min-vh-80 lazy')
     image_url = image_div['data-bg'].replace('url(', '').replace(')', '') if image_div else None
 
-    # Extract event title
     title = soup.find('h1').text.strip()
 
-    # Extract place details
-    details_class = 'col-md-6 mx-auto'
-    details = soup.find_all('div', class_=details_class)
-    for detail in details:
-        if 'Gdzie?' in detail.text:
-            place_section_raw = detail.find('p').text
-            # For some reason each time the place value starts with
-            # backtick, so we strip it
-            place_section = place_section_raw.lstrip('`').strip()
-            place_name_raw, _, place_address_raw = place_section.partition(',')
-            place_name = place_name_raw.strip()
-            place_address = place_address_raw.strip()
-            break
+    place_name, place_address = get_place_name_address(soup)
 
-    # Extract event dates and times
     date_times = []
     date_time_section = (
         soup.find('div', class_='col-md-6 mx-auto')
