@@ -207,22 +207,22 @@ def prepare_gancio_event(
 ) -> dict[str, object]:
     date_times = event_details['date_times']
     assert isinstance(date_times, list)
-    for event_date in date_times:
-        # Structure based on Gancio API
-        # https://gancio.org/dev/api#add-a-new-event
-        data = {
-            'title': event_details['title'],
-            'description': event_details['description'],
-            'place_name': event_details['place_name'],
-            'place_address': event_details['place_address'],
-            'start_datetime': int(datetime.fromisoformat(event_date).timestamp()),
-            # Assuming these are not multidate events
-            'multidate': 0,
-            'tags': json.dumps(['swing']),
-        }
-        if event_details['image_url']:
-            assert isinstance(event_details['image_url'], str)
-            data['image'] = img_getter(event_details['image_url'])
+    # Structure based on Gancio API
+    # https://gancio.org/dev/api#add-a-new-event
+    data = {
+        'title': event_details['title'],
+        'description': event_details['description'],
+        'place_name': event_details['place_name'],
+        'place_address': event_details['place_address'],
+        'start_datetime': int(datetime.fromisoformat(date_times[0]).timestamp()),
+        # Assuming these are not multidate events
+        'multidate': 0,
+        'tags': json.dumps(['swing']),
+        'recurrent': {'days': date_times},
+    }
+    if event_details['image_url']:
+        assert isinstance(event_details['image_url'], str)
+        data['image'] = img_getter(event_details['image_url'])
 
     return data
 
