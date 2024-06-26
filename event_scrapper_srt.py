@@ -47,34 +47,6 @@ def get_xml_content(sitemap_url: str) -> bytes:
         return response.read()
 
 
-def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
-    events = []
-    for event in sitemap_elems:
-        with urllib.request.urlopen(event.url) as response:
-            html_content = response.read().decode('utf-8')
-            events.append(extract_event_details(html_content))
-    logging.info(f'Extracted details for {len(events)} events')
-    return events
-
-
-def get_future_events(events: list[Event]) -> list[Event]:
-    """Filters out events that are in the past.
-
-    Currently the event is qualified as future if any of its `date_times`
-    is in the future which might be not ideal.
-
-    TODO: decide if we should remove past dates from event `date_times` field.
-    """
-    future_events = []
-    for event in events:
-        for date_time in event.date_times:
-            if datetime.fromisoformat(date_time) > datetime.now():
-                future_events.append(event)
-                break
-    logging.info(f'{len(future_events)} of {len(events)} are future events')
-    return future_events
-
-
 def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
     """Extracts event URLs and lastmod dates from the sitemap XML content.
 
@@ -114,6 +86,34 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
 
     logging.info(f'Extracted {len(events)} events from the sitemap')
     return events
+
+
+def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
+    events = []
+    for event in sitemap_elems:
+        with urllib.request.urlopen(event.url) as response:
+            html_content = response.read().decode('utf-8')
+            events.append(extract_event_details(html_content))
+    logging.info(f'Extracted details for {len(events)} events')
+    return events
+
+
+def get_future_events(events: list[Event]) -> list[Event]:
+    """Filters out events that are in the past.
+
+    Currently the event is qualified as future if any of its `date_times`
+    is in the future which might be not ideal.
+
+    TODO: decide if we should remove past dates from event `date_times` field.
+    """
+    future_events = []
+    for event in events:
+        for date_time in event.date_times:
+            if datetime.fromisoformat(date_time) > datetime.now():
+                future_events.append(event)
+                break
+    logging.info(f'{len(future_events)} of {len(events)} are future events')
+    return future_events
 
 
 def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
