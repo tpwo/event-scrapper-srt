@@ -7,6 +7,7 @@ import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from datetime import datetime
+from datetime import timezone
 from typing import NamedTuple
 
 from bs4 import BeautifulSoup
@@ -55,11 +56,17 @@ def get_xml_content(sitemap_url: str) -> bytes:
         return response.read()
 
 
-def get_events_from_sitemap(xml_content: bytes) -> list[Event]:
+def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[Event]:
     """Extracts event URLs and lastmod dates from the sitemap XML content.
 
     Sitemap displays the events from the oldest to the newest, so we
     reverse the list at the end.
+
+    Args:
+        xml_content: The XML content of the sitemap.
+        max_age_days: The maximum age of the event in days. Events older
+        than this will be skipped.
+
     """
     root = etree.fromstring(xml_content)
 
@@ -68,19 +75,31 @@ def get_events_from_sitemap(xml_content: bytes) -> list[Event]:
     # Define the namespace dictionary for use in xpath
     ns = {'ns': schema_parts[0]}
 
-    urls = root.xpath('//ns:url', namespaces=ns)
+    elements = root.xpath('//ns:url', namespaces=ns)
 
     events = []
-    for url in urls:
-        loc = url.xpath('ns:loc/text()', namespaces=ns)[0]
-        lastmod = url.xpath('ns:lastmod/text()', namespaces=ns)
-        lastmod = lastmod[0] if lastmod else 'N/A'
-
-        event = Event(url=loc, lastmod=lastmod)
-        events.append(event)
+    for elem in reversed(elements):
+        url = elem.xpath('ns:loc/text()', namespaces=ns)[0]
+        lastmod = elem.xpath('ns:lastmod/text()', namespaces=ns)[0]
+        try:
+            lastmod_dt = datetime.fromisoformat(lastmod)
+        except ValueError as err:
+            logging.warning(f'Failed to parse lastmod date `{lastmod}`. Error: `{err}`')
+        else:
+            if event_older_than_max_age_days(lastmod_dt, max_age_days):
+                logging.info(f'Event `{url}` is older than {max_age_days} days, skipping')
+            else:
+                event = Event(url=url, lastmod=lastmod)
+                events.append(event)
 
     logging.info(f'Extracted {len(events)} events from the sitemap')
-    return list(reversed(events))
+    return events
+
+
+def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
+    days = (dt - datetime.now(timezone.utc)).days * -1
+    logging.debug(f'Event is {days} days old')
+    return days > max_age_days
 
 
 def extract_event_details(html_content: str) -> dict[str, object]:
