@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from lxml import etree
 
 
-class Event(NamedTuple):
+class SitemapElem(NamedTuple):
     url: str
     lastmod: str
 
@@ -56,7 +56,7 @@ def get_xml_content(sitemap_url: str) -> bytes:
         return response.read()
 
 
-def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[Event]:
+def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
     """Extracts event URLs and lastmod dates from the sitemap XML content.
 
     Sitemap displays the events from the oldest to the newest, so we
@@ -90,7 +90,7 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
             if event_older_than_max_age_days(lastmod_dt, max_age_days):
                 logging.debug(f'Event `{url}` is older than {max_age_days} days, skipping')
             else:
-                event = Event(url=url, lastmod=lastmod)
+                event = SitemapElem(url=url, lastmod=lastmod)
                 events.append(event)
 
     logging.info(f'Extracted {len(events)} events from the sitemap')
