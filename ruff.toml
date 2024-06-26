@@ -2,3 +2,7 @@ line-length = 100
 
 [format]
 quote-style = "single"
+
+[lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]
