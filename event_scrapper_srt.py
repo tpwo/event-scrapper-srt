@@ -144,11 +144,13 @@ def extract_event_details(html_content: str) -> Event:
     )
     for dt in date_time_section:
         try:
-            date_str, time_str = dt.find('strong').text.strip(), dt.text.split()[-1]
+            date_str = dt.find('strong').text.strip()
+            start_time_str = dt.text.partition('-')[0].split()[-1]
+            # end_time_str = dt.text.partition('-')[-1].split()[-1]
         except AttributeError as err:
             logging.warning(f'Failed to extract date and time from: `{dt}`. Error: `{err}`')
         else:
-            dt_str = f'{date_str} {time_str}'
+            dt_str = f'{date_str} {start_time_str}'
             start_datetime = parse_polish_date(dt_str)
             date_times.append(start_datetime.isoformat())
 
