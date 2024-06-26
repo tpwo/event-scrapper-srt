@@ -1,11 +1,40 @@
 from __future__ import annotations
 
+import datetime
+import json
+import urllib.parse
 import urllib.request
+from typing import NamedTuple
 
+from bs4 import BeautifulSoup
 from lxml import etree
 
 
-def fetch_event_details(sitemap_url):
+class Event(NamedTuple):
+    url: str
+    lastmod: str
+
+
+def main():
+    sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
+    events = get_events(sitemap_url)
+    details = []
+    gancio_events = []
+
+    for event in events:
+        try:
+            with urllib.request.urlopen(event.url) as response:
+                html_content = response.read().decode('utf-8')
+                event_details = extract_event_details(html_content)
+                details.append(event_details)
+                gancio_events.append(prepare_gancio_event(event_details))
+        except urllib.error.HTTPError as e:
+            print(f"HTTPError: {e.code} - {e.read().decode('utf-8')}")
+        except urllib.error.URLError as e:
+            print(f'URLError: {e.reason}')
+
+
+def get_events(sitemap_url):
     # Fetch the XML content from the URL
     with urllib.request.urlopen(sitemap_url) as response:
         xml_content = response.read()
@@ -31,21 +60,76 @@ def fetch_event_details(sitemap_url):
         lastmod = url.xpath('ns:lastmod/text()', namespaces=ns)
         lastmod = lastmod[0] if lastmod else 'N/A'
 
-        event = {'loc': loc, 'lastmod': lastmod}
+        event = Event(url=loc, lastmod=lastmod)
         events.append(event)
 
     return events
 
 
-def main():
-    sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
-    events = fetch_event_details(sitemap_url)
+def extract_event_details(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
 
-    # Print out event details
-    for event in events:
-        print(f"Event URL: {event['loc']}")
-        print(f"Last Modified: {event['lastmod']}")
-        print('-' * 40)
+    # Extract image URL
+    image_div = soup.find('div', class_='page-header min-vh-80 lazy')
+    image_url = image_div['data-bg'].replace('url(', '').replace(')', '') if image_div else None
+
+    # Extract event title
+    title = soup.find('h1').text.strip()
+
+    # Extract event description
+    description_section = soup.find(
+        'div', class_='col-lg-6 justify-content-center d-flex flex-column ps-lg-5 pt-lg-0 pt-3'
+    )
+    description = description_section.find('p').decode_contents() if description_section else ''
+
+    # Extract place details
+    place_section = soup.find_all('div', class_='col-md-6 mx-auto')[1]
+    place_name = place_section.find('h5').text.strip()
+    place_address = place_section.find('p').text.strip()
+
+    # Extract event dates and times
+    date_times = []
+    date_time_section = (
+        soup.find('div', class_='col-md-6 mx-auto')
+        .find('div', class_='p-3 text-center')
+        .find_all('p')
+    )
+    for dt in date_time_section:
+        date_str, time_str = dt.find('strong').text.strip(), dt.text.split()[-1]
+        start_datetime = datetime.datetime.strptime(f'{date_str} {time_str}', '%d %B %Y %H:%M')
+        date_times.append(start_datetime)
+
+    return {
+        'title': title,
+        'description': description,
+        'place_name': place_name,
+        'place_address': place_address,
+        'image_url': image_url,
+        'date_times': date_times,
+    }
+
+
+def prepare_gancio_event(event_details):
+    for event_date in event_details['date_times']:
+        data = {
+            'title': event_details['title'],
+            'description': event_details['description'],
+            'place_name': event_details['place_name'],
+            'place_address': event_details['place_address'],
+            'place_latitude': 0.0,  # Replace with actual latitude
+            'place_longitude': 0.0,  # Replace with actual longitude
+            'online_locations': json.dumps([]),  # Empty list for online locations
+            'start_datetime': int(event_date.timestamp()),
+            'multidate': 1,  # Assuming these are multidate events
+            'tags': json.dumps([]),  # Add relevant tags
+        }
+
+        if event_details['image_url']:
+            image_response = urllib.request.urlopen(event_details['image_url'])
+            image_data = image_response.read()
+            data['image'] = image_data
+
+        return data
 
 
 if __name__ == '__main__':
