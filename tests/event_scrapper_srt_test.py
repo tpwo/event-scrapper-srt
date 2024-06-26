@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import pathlib
 
+import pytest
+
 import event_scrapper_srt
 from event_scrapper_srt import Event
 
@@ -30,6 +32,13 @@ def test_get_events_from_sitemap():
     assert actual == expected
 
 
-def test_extract_event_details():
-    html_content = pathlib.Path('testing/example-event.html').read_text()
+@pytest.mark.parametrize(
+    'file',
+    (
+        'example-event.html',
+        'example-event-recurring.html',
+    ),
+)
+def test_extract_event_details(file):
+    html_content = pathlib.Path(f'testing/{file}').read_text()
     event_scrapper_srt.extract_event_details(html_content=html_content)
