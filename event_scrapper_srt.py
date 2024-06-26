@@ -32,7 +32,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
     xml_content = get_xml_content(sitemap_url)
-    events = get_events(xml_content)
+    sitemap_elems = get_events_from_sitemap(xml_content)
+    events = get_events(sitemap_elems)
     future_events = get_future_events(events)
 
     os.makedirs('output', exist_ok=True)
@@ -46,9 +47,9 @@ def get_xml_content(sitemap_url: str) -> bytes:
         return response.read()
 
 
-def get_events(xml_content: bytes) -> list[Event]:
+def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
     events = []
-    for event in get_events_from_sitemap(xml_content):
+    for event in sitemap_elems:
         with urllib.request.urlopen(event.url) as response:
             html_content = response.read().decode('utf-8')
             events.append(extract_event_details(html_content))
