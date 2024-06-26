@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import urllib.request
-import xml.etree.ElementTree as ET
+
+from lxml import etree
 
 
 def fetch_event_details(sitemap_url):
@@ -9,24 +10,28 @@ def fetch_event_details(sitemap_url):
     with urllib.request.urlopen(sitemap_url) as response:
         xml_content = response.read()
 
-    # Parse the XML content
-    root = ET.fromstring(xml_content)
+    # Parse the XML content using lxml
+    root = etree.fromstring(xml_content)
 
-    # Namespace required for parsing specific XML tags
-    namespace = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    # Extract the namespace from xsi:schemaLocation
+    schema_location = root.attrib[
+        "{http://www.w3.org/2001/XMLSchema-instance}schemaLocation"
+    ]
+    schema_parts = schema_location.split()
+    namespace = schema_parts[0]  # Extract the namespace URL
+
+    # Define the namespace dictionary for use in xpath
+    ns = {"ns": namespace}
 
     # Find all <url> elements
-    urls = root.findall("ns:url", namespace)
+    urls = root.xpath("//ns:url", namespaces=ns)
 
     # Extract event details from each <url>
     events = []
     for url in urls:
-        loc = url.find("ns:loc", namespace).text
-        lastmod = (
-            url.find("ns:lastmod", namespace).text
-            if url.find("ns:lastmod", namespace) is not None
-            else "N/A"
-        )
+        loc = url.xpath("ns:loc/text()", namespaces=ns)[0]
+        lastmod = url.xpath("ns:lastmod/text()", namespaces=ns)
+        lastmod = lastmod[0] if lastmod else "N/A"
 
         event = {"loc": loc, "lastmod": lastmod}
         events.append(event)
