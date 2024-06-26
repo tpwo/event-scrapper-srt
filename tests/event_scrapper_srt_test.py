@@ -48,17 +48,6 @@ def test_get_events_from_sitemap():
             },
         ),
         (
-            'example-event-past.html',
-            {
-                'title': 'Swingowa potańcówka nad Motławą',
-                'description': '\n                                Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i\n                                ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy\n                                Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy\n                                zacząć własnie od niego.',
-                'place_name': 'Za ile?',
-                'place_address': '10zł',
-                'image_url': 'https://swingrevolution.pl/wp-content/uploads/2022/11/321906541_1231864150738514_2749587281127323943_n.jpg',
-                'date_times': [],
-            },
-        ),
-        (
             'example-event-recurring.html',
             {
                 'title': 'Sunday Summer Night | CONIEDZIELNA POTAŃCÓWKA',
@@ -84,3 +73,27 @@ def test_extract_event_details(file, expected):
     html_content = pathlib.Path(f'testing/{file}').read_text()
     actual = event_scrapper_srt.extract_event_details(html_content=html_content)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ('file', 'expected'),
+    (
+        (
+            'example-event-past.html',
+            {
+                'title': 'Swingowa potańcówka nad Motławą',
+                'description': '\n                                Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i\n                                ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy\n                                Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy\n                                zacząć własnie od niego.',
+                'place_name': 'Za ile?',
+                'place_address': '10zł',
+                'image_url': 'https://swingrevolution.pl/wp-content/uploads/2022/11/321906541_1231864150738514_2749587281127323943_n.jpg',
+                'date_times': [],
+            },
+        ),
+    ),
+)
+def test_extract_past_event_details(file, expected, caplog):
+    html_content = pathlib.Path(f'testing/{file}').read_text()
+    actual = event_scrapper_srt.extract_event_details(html_content=html_content)
+    assert actual == expected
+    assert 'Failed to extract date and time from: ' in caplog.text
+    assert "Error: `'NoneType' object has no attribute 'text'`" in caplog.text

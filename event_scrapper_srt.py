@@ -100,8 +100,8 @@ def extract_event_details(html_content: str) -> dict[str, object]:
     for dt in date_time_section:
         try:
             date_str, time_str = dt.find('strong').text.strip(), dt.text.split()[-1]
-        except AttributeError:
-            logging.warning(f'Failed to extract date and time from: {dt}')
+        except AttributeError as err:
+            logging.warning(f'Failed to extract date and time from: `{dt}`. Error: `{err}`')
         else:
             dt_str = f'{date_str} {time_str}'
             start_datetime = parse_polish_date(dt_str)
