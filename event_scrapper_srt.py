@@ -32,14 +32,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
     xml_content = get_xml_content(sitemap_url)
-    future_events: list[Event] = []
-
-    for event in get_events(xml_content):
-        for date_time in event.date_times:
-            if datetime.fromisoformat(date_time) > datetime.now():
-                future_events.append(event)
-                break
-    logging.info(f'{len(future_events)} of them are future events')
+    events = get_events(xml_content)
+    future_events = get_future_events(events)
 
     os.makedirs('output', exist_ok=True)
     with open(f'output/details_{datetime.now().isoformat()}.json', 'w', encoding='utf-8') as file:
@@ -60,6 +54,24 @@ def get_events(xml_content: bytes) -> list[Event]:
             events.append(extract_event_details(html_content))
     logging.info(f'Extracted details for {len(events)} events')
     return events
+
+
+def get_future_events(events: list[Event]) -> list[Event]:
+    """Filters out events that are in the past.
+
+    Currently the event is qualified as future if any of its `date_times`
+    is in the future which might be not ideal.
+
+    TODO: decide if we should remove past dates from event `date_times` field.
+    """
+    future_events = []
+    for event in events:
+        for date_time in event.date_times:
+            if datetime.fromisoformat(date_time) > datetime.now():
+                future_events.append(event)
+                break
+    logging.info(f'{len(future_events)} of {len(events)} are future events')
+    return future_events
 
 
 def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
