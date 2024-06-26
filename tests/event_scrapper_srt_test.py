@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import pathlib
 
 import pytest
@@ -33,12 +34,42 @@ def test_get_events_from_sitemap():
 
 
 @pytest.mark.parametrize(
-    'file',
+    ('file', 'expected'),
     (
-        'example-event.html',
-        'example-event-recurring.html',
+        (
+            'example-event.html',
+            {
+                'title': 'Lindy Hop dla początkujacych | intensywne warsztaty',
+                'description': '\n                                Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i\n                                ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy\n                                Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy\n                                zacząć własnie od niego.',
+                'place_name': 'Gdzie?',
+                'place_address': '`\n                                        Studio Swing Revolution Trójmiasto, Łąkowa 35/38, Gdańsk',
+                'image_url': 'https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
+                'date_times': [datetime.datetime(2024, 7, 27, 15, 0)],
+            },
+        ),
+        (
+            'example-event-recurring.html',
+            {
+                'title': 'Sunday Summer Night | CONIEDZIELNA POTAŃCÓWKA',
+                'description': '\n<p>Wyobraźcie sobie letni, niedzielny wieczór… 🌅 Dzień powoli się kończy, ale jednak czegoś\n                                brakuje do pełnego spełnienia. Zaczynasz szukać potańcówki tu i tam, i nic nie ma! Kto w\n                                niedzielę robi potańcówki? Kto robi imprezy regularnie, tak by nie musieć się\n                                zastanawiać i ich szukać? 🤔</p>\n<p>Otóż… MY! 😃 Kochani, zapraszamy Was na Sunday Summer Night! Co niedzielę przez lipiec i\n                                sierpień otwieramy nasze studio o 20:00, organizujemy DJ’kę i bawimy się do 23:00. 🎶\n                            </p>\n<p>Bez socialu nie ma tańca, więc zapraszamy wszystkich Lindy Hopersów, tancerzy Solo Jazz,\n                                Boogie i Balboa Maniaków na parkiet! 💃🕺 Chcemy stworzyć kolejną okazję do tańczenia i\n                                integracji naszej trójmiejskiej społeczności.</p>\n<p>Jeśli jesteś nowy/nowa, przyjdź i poproś kogoś o pokazanie podstawowych kroków. 👟 Tylko\n                                ci, którzy spróbowali dołączyć do nas, wiedzą, jak łatwa i przyjemna to sprawa, a nasza\n                                społeczność słynie ze swojej otwartości i przyjazności. 🌟</p>\n<p>Do zobaczenia na parkiecie!</p>\n<p>– Coniedziele 7 lipca – 25 sierpnia, Studio SRT, 20:00-23:00</p>\n',
+                'place_name': 'Gdzie?',
+                'place_address': '`\n                                        Studio Swing Revolution Trójmiasto, ul. Łąkowa 35/38',
+                'image_url': 'https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
+                'date_times': [
+                    datetime.datetime(2024, 7, 7, 23, 0),
+                    datetime.datetime(2024, 7, 14, 23, 0),
+                    datetime.datetime(2024, 7, 21, 23, 0),
+                    datetime.datetime(2024, 7, 28, 23, 0),
+                    datetime.datetime(2024, 8, 4, 23, 0),
+                    datetime.datetime(2024, 8, 11, 23, 0),
+                    datetime.datetime(2024, 8, 18, 23, 0),
+                    datetime.datetime(2024, 8, 25, 23, 0),
+                ],
+            },
+        ),
     ),
 )
-def test_extract_event_details(file):
+def test_extract_event_details(file, expected):
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    event_scrapper_srt.extract_event_details(html_content=html_content)
+    actual = event_scrapper_srt.extract_event_details(html_content=html_content)
+    assert actual == expected
