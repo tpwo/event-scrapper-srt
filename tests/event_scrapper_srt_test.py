@@ -10,7 +10,7 @@ from event_scrapper_srt import Event
 
 def test_get_events_from_sitemap():
     xml_content = pathlib.Path('testing/example-events-sitemap.xml').read_bytes()
-    actual = event_scrapper_srt.get_events(xml_content=xml_content)
+    actual = event_scrapper_srt.get_events_from_sitemap(xml_content=xml_content)
     expected = [
         Event(
             url='https://swingrevolution.pl/wydarzenia/swingowa-potancowka-nad-motlawa/',

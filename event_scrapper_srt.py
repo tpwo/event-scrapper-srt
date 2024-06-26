@@ -22,12 +22,10 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
     xml_content = get_xml_content(sitemap_url)
-    events = get_events(xml_content)
-    logging.info(f'Extracted {len(events)} events from the sitemap')
     details = []
     # gancio_events = []
 
-    for event in reversed(events):
+    for event in reversed(get_events_from_sitemap(xml_content)):
         with urllib.request.urlopen(event.url) as response:
             html_content = response.read().decode('utf-8')
             event_details = extract_event_details(html_content)
@@ -57,7 +55,8 @@ def get_xml_content(sitemap_url: str) -> bytes:
         return response.read()
 
 
-def get_events(xml_content: bytes) -> list[Event]:
+def get_events_from_sitemap(xml_content: bytes) -> list[Event]:
+    """Extracts event URLs and lastmod dates from the sitemap XML content."""
     # Parse the XML content using lxml
     root = etree.fromstring(xml_content)
 
@@ -82,6 +81,7 @@ def get_events(xml_content: bytes) -> list[Event]:
         event = Event(url=loc, lastmod=lastmod)
         events.append(event)
 
+    logging.info(f'Extracted {len(events)} events from the sitemap')
     return events
 
 
