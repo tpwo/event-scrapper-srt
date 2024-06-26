@@ -34,10 +34,10 @@ def main() -> None:
     xml_content = get_xml_content(sitemap_url)
     future_events: list[Event] = []
 
-    for detail in get_events(xml_content):
-        for date_time in detail.date_times:
+    for event in get_events(xml_content):
+        for date_time in event.date_times:
             if datetime.fromisoformat(date_time) > datetime.now():
-                future_events.append(detail)
+                future_events.append(event)
                 break
     logging.info(f'{len(future_events)} of them are future events')
 
