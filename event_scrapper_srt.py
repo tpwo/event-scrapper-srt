@@ -76,6 +76,7 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
     ns = {'ns': schema_parts[0]}
 
     elements = root.xpath('//ns:url', namespaces=ns)
+    logging.info(f'Found {len(elements)} events in the sitemap')
 
     events = []
     for elem in reversed(elements):
@@ -87,7 +88,7 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
             logging.warning(f'Failed to parse lastmod date `{lastmod}`. Error: `{err}`')
         else:
             if event_older_than_max_age_days(lastmod_dt, max_age_days):
-                logging.info(f'Event `{url}` is older than {max_age_days} days, skipping')
+                logging.debug(f'Event `{url}` is older than {max_age_days} days, skipping')
             else:
                 event = Event(url=url, lastmod=lastmod)
                 events.append(event)
