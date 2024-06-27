@@ -136,23 +136,16 @@ def extract_event_details(html_content: str) -> Event:
 
     place_name, place_address = get_place_name_address(soup)
 
+    details_class = 'col-md-6 mx-auto'
+    details = soup.find_all('div', class_=details_class)
+    when_header = 'Kiedy?'
     date_times = []
-    date_time_section = (
-        soup.find('div', class_='col-md-6 mx-auto')
-        .find('div', class_='p-3 text-center')
-        .find_all('p')
-    )
-    for dt in date_time_section:
-        try:
-            date_str = dt.find('strong').text.strip()
-            start_time_str = dt.text.partition('-')[0].split()[-1]
-            # end_time_str = dt.text.partition('-')[-1].split()[-1]
-        except AttributeError as err:
-            logging.warning(f'Failed to extract date and time from: `{dt}`. Error: `{err}`')
-        else:
-            dt_str = f'{date_str} {start_time_str}'
-            start_datetime = parse_polish_date(dt_str)
-            date_times.append(start_datetime.isoformat())
+    for detail in details:
+        if when_header in detail.text:
+            date_times = get_date_times(detail.find_all('p'))
+    if len(date_times) == 0:
+        logging.warning('Failed to extract date and time from')
+        date_times = []
 
     return Event(
         title=title,
@@ -162,6 +155,18 @@ def extract_event_details(html_content: str) -> Event:
         image_url=image_url,
         date_times=date_times,
     )
+
+
+def get_date_times(p_elems: list[BeautifulSoup]) -> list[str]:
+    date_times = []
+    for dt in p_elems:
+        date_str = dt.find('strong').text.strip()
+        start_time_str = dt.text.partition('-')[0].split()[-1]
+        # end_time_str = dt.text.partition('-')[-1].split()[-1]
+        dt_str = f'{date_str} {start_time_str}'
+        start_datetime = parse_polish_date(dt_str)
+        date_times.append(start_datetime.isoformat())
+    return date_times
 
 
 def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:

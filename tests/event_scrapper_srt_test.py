@@ -52,8 +52,7 @@ def test_extract_past_event_details(file, expected, caplog):
     html_content = pathlib.Path(f'testing/{file}').read_text()
     actual = event_scrapper_srt.extract_event_details(html_content=html_content)
     assert actual == expected
-    assert 'Failed to extract date and time from: ' in caplog.text
-    assert "Error: `'NoneType' object has no attribute 'text'`" in caplog.text
+    assert 'Failed to extract date and time from' in caplog.text
 
 
 @pytest.mark.parametrize(
