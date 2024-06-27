@@ -147,7 +147,7 @@ def extract_event_details(html_content: str, url: str) -> Event:
         date_times = get_date_times(details)
     except ValueError:
         date_times = []
-        logging.info(f'Past event found: no date and time information in {title}')
+        logging.info(f'Past event found: no date and time information in `{title}`')
 
     return Event(
         url=url,
