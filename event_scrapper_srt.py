@@ -134,10 +134,10 @@ def extract_event_details(html_content: str) -> Event:
 
     title = soup.find('h1').text.strip()
 
-    place_name, place_address = get_place_name_address(soup)
-
     details_class = 'col-md-6 mx-auto'
     details = soup.find_all('div', class_=details_class)
+
+    place_name, place_address = get_place_name_address(details)
 
     try:
         date_times = get_date_times(details)
@@ -175,9 +175,7 @@ def extract_date_times(p_elems: list[BeautifulSoup]) -> list[str]:
     return date_times
 
 
-def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
-    details_class = 'col-md-6 mx-auto'
-    details = soup.find_all('div', class_=details_class)
+def get_place_name_address(details: list[BeautifulSoup]) -> tuple[str, str]:
     place_header = 'Gdzie?'
     for detail in details:
         if place_header in detail.text:
