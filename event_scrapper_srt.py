@@ -224,27 +224,25 @@ def parse_polish_date(date_str: str) -> datetime:
     raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
 
 
-def prepare_gancio_event(
-    event_details: Event, img_getter: Callable[[str], bytes]
-) -> dict[str, object]:
-    date_times = event_details.date_times
+def prepare_gancio_event(event: Event, img_getter: Callable[[str], bytes]) -> dict[str, object]:
+    date_times = event.date_times
     # Structure based on Gancio API
     # https://gancio.org/dev/api#add-a-new-event
     data = {
-        'title': event_details.title,
-        'description': event_details.description,
-        'place_name': event_details.place_name,
-        'place_address': event_details.place_address,
-        'online_locations': [event_details.url],
+        'title': event.title,
+        'description': event.description,
+        'place_name': event.place_name,
+        'place_address': event.place_address,
+        'online_locations': [event.url],
         'start_datetime': int(datetime.fromisoformat(date_times[0]).timestamp()),
         # Assuming these are not multidate events
         'multidate': 0,
         'tags': json.dumps(['swing']),
         'recurrent': {'days': date_times},
     }
-    if event_details.image_url:
-        assert isinstance(event_details.image_url, str)
-        data['image'] = img_getter(event_details.image_url)
+    if event.image_url:
+        assert isinstance(event.image_url, str)
+        data['image'] = img_getter(event.image_url)
 
     return data
 

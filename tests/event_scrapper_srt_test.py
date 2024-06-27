@@ -69,9 +69,7 @@ def test_extract_past_event_details(file, expected, caplog):
     ),
 )
 def test_prepare_gancio_event(details, expected):
-    actual = event_scrapper_srt.prepare_gancio_event(
-        event_details=details, img_getter=get_image_mock
-    )
+    actual = event_scrapper_srt.prepare_gancio_event(event=details, img_getter=get_image_mock)
     assert actual == expected
 
 
