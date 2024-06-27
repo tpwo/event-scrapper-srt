@@ -235,6 +235,7 @@ def prepare_gancio_event(
         'description': event_details.description,
         'place_name': event_details.place_name,
         'place_address': event_details.place_address,
+        'online_locations': [event_details.url],
         'start_datetime': int(datetime.fromisoformat(date_times[0]).timestamp()),
         # Assuming these are not multidate events
         'multidate': 0,
