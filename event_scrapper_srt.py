@@ -138,14 +138,12 @@ def extract_event_details(html_content: str) -> Event:
 
     details_class = 'col-md-6 mx-auto'
     details = soup.find_all('div', class_=details_class)
-    when_header = 'Kiedy?'
-    date_times = []
-    for detail in details:
-        if when_header in detail.text:
-            date_times = get_date_times(detail.find_all('p'))
-    if len(date_times) == 0:
-        logging.warning('Failed to extract date and time from')
+
+    try:
+        date_times = get_date_times(details)
+    except ValueError:
         date_times = []
+        logging.info(f'Past event found: no date and time information in {title}')
 
     return Event(
         title=title,
@@ -157,7 +155,15 @@ def extract_event_details(html_content: str) -> Event:
     )
 
 
-def get_date_times(p_elems: list[BeautifulSoup]) -> list[str]:
+def get_date_times(details: list[BeautifulSoup]) -> list[str]:
+    when_header = 'Kiedy?'
+    for detail in details:
+        if when_header in detail.text:
+            return extract_date_times(detail.find_all('p'))
+    raise ValueError(f'Time details not found in the provided HTML content: `{details}`')
+
+
+def extract_date_times(p_elems: list[BeautifulSoup]) -> list[str]:
     date_times = []
     for dt in p_elems:
         date_str = dt.find('strong').text.strip()

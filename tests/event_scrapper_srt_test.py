@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import pathlib
 
 import freezegun
@@ -49,10 +50,11 @@ def test_extract_event_details(file, expected):
     (('example-event-past.html', resources.example_event_past),),
 )
 def test_extract_past_event_details(file, expected, caplog):
+    caplog.set_level(logging.INFO)
     html_content = pathlib.Path(f'testing/{file}').read_text()
     actual = event_scrapper_srt.extract_event_details(html_content=html_content)
     assert actual == expected
-    assert 'Failed to extract date and time from' in caplog.text
+    assert 'Past event found: no date and time information' in caplog.text
 
 
 @pytest.mark.parametrize(
