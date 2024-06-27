@@ -13,6 +13,9 @@ from typing import NamedTuple
 from bs4 import BeautifulSoup
 from lxml import etree
 
+HEADER_DATE_TIMES = 'Kiedy?'
+HEADER_PLACE = 'Gdzie?'
+
 
 class SitemapElem(NamedTuple):
     url: str
@@ -156,9 +159,8 @@ def extract_event_details(html_content: str) -> Event:
 
 
 def get_date_times(details: list[BeautifulSoup]) -> list[str]:
-    when_header = 'Kiedy?'
     for detail in details:
-        if when_header in detail.text:
+        if HEADER_DATE_TIMES in detail.text:
             return extract_date_times(detail.find_all('p'))
     raise ValueError(f'Time details not found in the provided HTML content: `{details}`')
 
@@ -176,9 +178,8 @@ def extract_date_times(p_elems: list[BeautifulSoup]) -> list[str]:
 
 
 def get_place_name_address(details: list[BeautifulSoup]) -> tuple[str, str]:
-    place_header = 'Gdzie?'
     for detail in details:
-        if place_header in detail.text:
+        if HEADER_PLACE in detail.text:
             place_section_raw = detail.find('p').text
             # For some reason each time the place value starts with
             # backtick, so we strip it
