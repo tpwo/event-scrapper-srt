@@ -23,6 +23,7 @@ class SitemapElem(NamedTuple):
 
 
 class Event(NamedTuple):
+    url: str
     title: str
     description: str
     place_name: str
@@ -92,7 +93,7 @@ def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
     for event in sitemap_elems:
         with urllib.request.urlopen(event.url) as response:
             html_content = response.read().decode('utf-8')
-            events.append(extract_event_details(html_content))
+            events.append(extract_event_details(html_content, event.url))
     logging.info(f'Extracted details for {len(events)} events')
     return events
 
@@ -129,7 +130,7 @@ def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
     return days > max_age_days
 
 
-def extract_event_details(html_content: str) -> Event:
+def extract_event_details(html_content: str, url: str) -> Event:
     soup = BeautifulSoup(html_content, 'html.parser')
 
     image_div = soup.find('div', class_='page-header min-vh-80 lazy')
@@ -149,6 +150,7 @@ def extract_event_details(html_content: str) -> Event:
         logging.info(f'Past event found: no date and time information in {title}')
 
     return Event(
+        url=url,
         title=title,
         description=get_description(soup),
         place_name=place_name,

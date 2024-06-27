@@ -41,7 +41,9 @@ def test_get_events_from_sitemap():
 )
 def test_extract_event_details(file, expected):
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    actual = event_scrapper_srt.extract_event_details(html_content=html_content)
+    actual = event_scrapper_srt.extract_event_details(
+        html_content=html_content, url='https://example.com/'
+    )
     assert actual == expected
 
 
@@ -52,7 +54,9 @@ def test_extract_event_details(file, expected):
 def test_extract_past_event_details(file, expected, caplog):
     caplog.set_level(logging.INFO)
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    actual = event_scrapper_srt.extract_event_details(html_content=html_content)
+    actual = event_scrapper_srt.extract_event_details(
+        html_content=html_content, url='https://example.com/'
+    )
     assert actual == expected
     assert 'Past event found: no date and time information' in caplog.text
 
