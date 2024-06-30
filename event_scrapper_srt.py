@@ -139,7 +139,9 @@ def dump_events_to_json(events: list[Event], folder: str) -> None:
     os.makedirs(folder, exist_ok=True)
     filename = f'{folder}/events_{datetime.now().isoformat()}.json'
     with open(filename, 'w', encoding='utf-8') as file:
-        json.dump([event._asdict() for event in events], file, indent=4, ensure_ascii=False)
+        json.dump(
+            [event._asdict() for event in events], file, indent=4, ensure_ascii=False, default=str
+        )
     logging.info(f'Saved event details to `{filename}`')
 
 
