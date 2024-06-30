@@ -44,6 +44,12 @@ class Occurrence:
 
 @dataclass(frozen=True)
 class GancioEvent:
+    """Represents an API request to create a new event in Gancio.
+
+    Documentation:
+    https://gancio.org/dev/api#add-a-new-event
+    """
+
     title: str
     description: str
     place_name: str
@@ -269,8 +275,6 @@ def get_image(image_url: str) -> bytes:
 def prepare_gancio_event(
     event: Event, img_getter: Callable[[str], bytes] = get_image
 ) -> list[GancioEvent]:
-    # Structure based on Gancio API
-    # https://gancio.org/dev/api#add-a-new-event
     if event.image_url:
         image = img_getter(event.image_url)
     else:
