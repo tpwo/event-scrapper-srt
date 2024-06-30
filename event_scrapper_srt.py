@@ -44,6 +44,7 @@ class GancioEvent(NamedTuple):
     place_address: str
     online_locations: list[str]
     start_datetime: int
+    end_datetime: int | None
     multidate: int
     tags: str
     image: bytes | None
@@ -255,6 +256,10 @@ def prepare_gancio_event(
         image = img_getter(event.image_url)
     else:
         image = None
+    if event.date_times[0].end:
+        end_datetime = int(event.date_times[0].end.timestamp())
+    else:
+        end_datetime = None
     return GancioEvent(
         title=event.title,
         description=event.description,
@@ -262,6 +267,7 @@ def prepare_gancio_event(
         place_address=event.place_address,
         online_locations=[event.url],
         start_datetime=int(event.date_times[0].start.timestamp()),
+        end_datetime=end_datetime,
         # Assuming these are not multidate events
         multidate=0,
         tags=json.dumps(['swing']),
