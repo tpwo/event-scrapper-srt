@@ -58,7 +58,7 @@ class GancioEvent:
     start_datetime: int
     end_datetime: int | None
     multidate: int
-    tags: str
+    tags: list[str]
     image: bytes | None
 
 
@@ -299,7 +299,7 @@ def prepare_gancio_event(
                 # anything, and without it mutlidate events are
                 # incorrectly added.
                 multidate=1,
-                tags=json.dumps(['swing']),
+                tags=['swing'],
                 image=image,
             )
         )

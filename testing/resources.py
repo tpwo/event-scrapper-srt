@@ -36,7 +36,7 @@ example_event_gancio = [
         start_datetime=1722074400,
         end_datetime=1722085200,
         multidate=1,
-        tags='["swing"]',
+        tags=['swing'],
         image=b'',
     )
 ]
@@ -77,7 +77,7 @@ example_event_recurring_gancio = [
         start_datetime=1720375200,
         end_datetime=1720386000,
         multidate=1,
-        tags='["swing"]',
+        tags=['swing'],
         image=b'',
     ),
     GancioEvent(
@@ -89,7 +89,7 @@ example_event_recurring_gancio = [
         start_datetime=1720980000,
         end_datetime=1720990800,
         multidate=1,
-        tags='["swing"]',
+        tags=['swing'],
         image=b'',
     ),
 ]
