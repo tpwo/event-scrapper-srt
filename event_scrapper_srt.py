@@ -128,6 +128,14 @@ def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
     return events
 
 
+def get_gancio_events(events: list[Event]) -> list[GancioEvent]:
+    gancio_events = []
+    for event in events:
+        gancio_events.extend(prepare_gancio_event(event))
+    logging.info(f'Prepared {len(gancio_events)} events for Gancio')
+    return gancio_events
+
+
 def get_future_events(events: list[Event]) -> list[Event]:
     """Filters out events that are in the past.
 
