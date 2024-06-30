@@ -9,6 +9,7 @@ from collections.abc import Callable
 from datetime import datetime
 from datetime import timezone
 from typing import NamedTuple
+from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 from lxml import etree
@@ -238,7 +239,9 @@ def parse_polish_date(date_str: str) -> datetime:
     for pl_month, month_num in MONTHS_PL.items():
         if pl_month in date_str:
             date_str = date_str.replace(pl_month, f'{month_num:02}')
-            return datetime.strptime(date_str, '%d %m %Y %H:%M')
+            return datetime.strptime(date_str, '%d %m %Y %H:%M').replace(
+                tzinfo=ZoneInfo('Europe/Warsaw')
+            )
     raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
 
 

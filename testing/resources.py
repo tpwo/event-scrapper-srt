@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import zoneinfo
 
 from event_scrapper_srt import Event
 from event_scrapper_srt import GancioEvent
@@ -15,7 +16,12 @@ example_event = Event(
     image_url='https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
     date_times=[
         Occurrence(
-            start=datetime.datetime(2024, 7, 27, 12, 0), end=datetime.datetime(2024, 7, 27, 15, 0)
+            start=datetime.datetime(
+                2024, 7, 27, 12, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/Warsaw')
+            ),
+            end=datetime.datetime(
+                2024, 7, 27, 15, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/Warsaw')
+            ),
         )
     ],
 )
@@ -44,10 +50,18 @@ example_event_recurring = Event(
     image_url='https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
     date_times=[
         Occurrence(
-            start=datetime.datetime(2024, 7, 7, 20, 0), end=datetime.datetime(2024, 7, 7, 23, 0)
+            start=datetime.datetime(
+                2024, 7, 7, 20, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/Warsaw')
+            ),
+            end=datetime.datetime(2024, 7, 7, 23, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/Warsaw')),
         ),
         Occurrence(
-            start=datetime.datetime(2024, 7, 14, 20, 0), end=datetime.datetime(2024, 7, 14, 23, 0)
+            start=datetime.datetime(
+                2024, 7, 14, 20, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/Warsaw')
+            ),
+            end=datetime.datetime(
+                2024, 7, 14, 23, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/Warsaw')
+            ),
         ),
     ],
 )
