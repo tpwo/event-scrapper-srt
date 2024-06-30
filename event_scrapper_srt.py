@@ -15,7 +15,6 @@ from datetime import timezone
 from pprint import pformat
 from zoneinfo import ZoneInfo
 
-import bs4
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
@@ -216,11 +215,9 @@ def get_title(soup: BeautifulSoup) -> str:
 
 
 def get_image_url(soup: BeautifulSoup) -> str | None:
-    if image_div := soup.find('div', class_='page-header min-vh-80 lazy'):
-        if isinstance(image_div, bs4.Tag):
-            image_url_function = image_div['data-bg']
-            assert isinstance(image_url_function, str)
-            return image_url_function.partition('(')[-1].partition(')')[0]
+    for elem in soup.find_all('header'):
+        for div in elem.find_all('div'):
+            return div['data-bg'].partition('(')[-1].partition(')')[0]
     logging.warning(f'Failed to extract image url from HTML content: `{soup}`')
     return None
 
