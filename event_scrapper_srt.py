@@ -194,7 +194,7 @@ def extract_event_details(html_content: str, url: str) -> Event:
     details_class = 'col-md-6 mx-auto'
     details = soup.find_all('div', class_=details_class)
 
-    place_name, place_address = get_place_name_address(details)
+    place_name, place_address = get_place_name_address(soup)
 
     try:
         date_times = get_date_times(details)
@@ -258,16 +258,16 @@ def get_end_timestamp(dt_text: str, date_str: str) -> datetime | None:
         return parse_polish_date(f'{date_str} {end_time_str}')
 
 
-def get_place_name_address(details: list[BeautifulSoup]) -> tuple[str, str]:
-    for detail in details:
-        if HEADER_PLACE in detail.text:
-            if place_section_raw := detail.find('p'):
+def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
+    for elem in soup.find_all('h5'):
+        if HEADER_PLACE in elem.text:
+            if place_section_raw := elem.parent.find('p'):
                 # For some reason each time the place value starts with
                 # backtick, so we strip it
                 place_section = place_section_raw.text.lstrip('`').strip()
                 place_name_raw, _, place_address_raw = place_section.partition(',')
                 return place_name_raw.strip(), place_address_raw.strip()
-    raise ValueError(f'Place details not found in the provided HTML content: `{details}`')
+    raise ValueError(f'Place details not found in the provided HTML content: `{soup}`')
 
 
 def get_description(soup: BeautifulSoup) -> str:
