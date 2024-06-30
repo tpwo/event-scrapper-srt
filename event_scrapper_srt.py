@@ -10,6 +10,7 @@ from dataclasses import asdict
 from dataclasses import dataclass
 from datetime import datetime
 from datetime import timezone
+from pprint import pformat
 from zoneinfo import ZoneInfo
 
 import requests
@@ -72,7 +73,11 @@ def main() -> None:
     dump_events_to_json(events, folder='output')
     gancio_events = get_gancio_events(events)
     future_events = get_future_events(gancio_events)
-    add_event_requests(future_events[0])
+    # There is a default rate limiting 5 requests per 5 minutes, so we
+    # iterate only on a few events
+    for event in future_events[:5]:
+        response = add_event_requests(event)
+        logging.info(f'Event added:\n{pformat(response)}')
 
 
 def get_xml_content(sitemap_url: str) -> bytes:
