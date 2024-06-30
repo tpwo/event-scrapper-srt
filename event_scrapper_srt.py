@@ -128,7 +128,7 @@ def get_future_events(events: list[Event]) -> list[Event]:
     future_events = []
     for event in events:
         for date_time in event.date_times:
-            if date_time.start > datetime.now():
+            if date_time.start > datetime.now(timezone.utc):
                 future_events.append(event)
                 break
     logging.info(f'{len(future_events)} of {len(events)} are future events')
