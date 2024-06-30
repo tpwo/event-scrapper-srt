@@ -209,8 +209,8 @@ def extract_event_details(html_content: str, url: str) -> Event:
 
 
 def get_title(soup: BeautifulSoup) -> str:
-    if title_raw := soup.find('h1'):
-        return title_raw.text.strip()
+    for elem in soup.find_all('h1'):
+        return elem.text.strip()
     raise ValueError(f'Title not found in the provided HTML content: `{soup}`')
 
 
