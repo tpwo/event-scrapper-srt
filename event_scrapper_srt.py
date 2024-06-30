@@ -103,7 +103,7 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
     schema_location = root.attrib['{http://www.w3.org/2001/XMLSchema-instance}schemaLocation']
     schema_parts = schema_location.split()
     # Define the namespace dictionary for use in xpath
-    ns = {'ns': schema_parts[0]}
+    ns = {'ns': str(schema_parts[0])}
 
     elements = root.xpath('//ns:url', namespaces=ns)
     logging.info(f'Found {len(elements)} events in the sitemap')
