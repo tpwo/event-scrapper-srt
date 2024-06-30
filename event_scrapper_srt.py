@@ -68,8 +68,9 @@ def main() -> None:
     xml_content = get_xml_content(sitemap_url)
     sitemap_elems = get_events_from_sitemap(xml_content)
     events = get_events(sitemap_elems)
-    future_events = get_future_events(events)
-    dump_events_to_json(future_events, folder='output')
+    dump_events_to_json(events, folder='output')
+    gancio_events = get_gancio_events(events)
+    get_future_events(gancio_events)
 
 
 def get_xml_content(sitemap_url: str) -> bytes:
@@ -136,20 +137,12 @@ def get_gancio_events(events: list[Event]) -> list[GancioEvent]:
     return gancio_events
 
 
-def get_future_events(events: list[Event]) -> list[Event]:
-    """Filters out events that are in the past.
-
-    Currently the event is qualified as future if any of its `date_times`
-    is in the future which might be not ideal.
-
-    TODO: decide if we should remove past dates from event `date_times` field.
-    """
+def get_future_events(events: list[GancioEvent]) -> list[GancioEvent]:
+    """Filters out past events."""
     future_events = []
     for event in events:
-        for date_time in event.date_times:
-            if date_time.start > datetime.now(timezone.utc):
-                future_events.append(event)
-                break
+        if datetime.fromtimestamp(event.start_datetime) > datetime.now():
+            future_events.append(event)
     logging.info(f'{len(future_events)} of {len(events)} are future events')
     return future_events
 
