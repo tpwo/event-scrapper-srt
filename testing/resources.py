@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import datetime
+
 from event_scrapper_srt import Event
 from event_scrapper_srt import GancioEvent
+from event_scrapper_srt import Occurrence
 
 example_event = Event(
     url='https://example.com/',
@@ -10,9 +13,12 @@ example_event = Event(
     place_name='Studio Swing Revolution Trójmiasto',
     place_address='Łąkowa 35/38, Gdańsk',
     image_url='https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
-    date_times=['2024-07-27T12:00:00'],
+    date_times=[
+        Occurrence(
+            start=datetime.datetime(2024, 7, 27, 12, 0), end=datetime.datetime(2024, 7, 27, 15, 0)
+        )
+    ],
 )
-
 
 example_event_gancio = GancioEvent(
     title='Lindy Hop dla początkujacych | intensywne warsztaty',
@@ -35,16 +41,33 @@ example_event_recurring = Event(
     place_address='ul. Łąkowa 35/38',
     image_url='https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
     date_times=[
-        '2024-07-07T20:00:00',
-        '2024-07-14T20:00:00',
-        '2024-07-21T20:00:00',
-        '2024-07-28T20:00:00',
-        '2024-08-04T20:00:00',
-        '2024-08-11T20:00:00',
-        '2024-08-18T20:00:00',
-        '2024-08-25T20:00:00',
+        Occurrence(
+            start=datetime.datetime(2024, 7, 7, 20, 0), end=datetime.datetime(2024, 7, 7, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 7, 14, 20, 0), end=datetime.datetime(2024, 7, 14, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 7, 21, 20, 0), end=datetime.datetime(2024, 7, 21, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 7, 28, 20, 0), end=datetime.datetime(2024, 7, 28, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 8, 4, 20, 0), end=datetime.datetime(2024, 8, 4, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 8, 11, 20, 0), end=datetime.datetime(2024, 8, 11, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 8, 18, 20, 0), end=datetime.datetime(2024, 8, 18, 23, 0)
+        ),
+        Occurrence(
+            start=datetime.datetime(2024, 8, 25, 20, 0), end=datetime.datetime(2024, 8, 25, 23, 0)
+        ),
     ],
 )
+
 
 example_event_recurring_gancio = GancioEvent(
     title='Sunday Summer Night | CONIEDZIELNA POTAŃCÓWKA',

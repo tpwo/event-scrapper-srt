@@ -29,7 +29,12 @@ class Event(NamedTuple):
     place_name: str
     place_address: str
     image_url: str | None
-    date_times: list[str]
+    date_times: list[Occurrence]
+
+
+class Occurrence(NamedTuple):
+    start: datetime
+    end: datetime | None
 
 
 class GancioEvent(NamedTuple):
@@ -122,7 +127,7 @@ def get_future_events(events: list[Event]) -> list[Event]:
     future_events = []
     for event in events:
         for date_time in event.date_times:
-            if datetime.fromisoformat(date_time) > datetime.now():
+            if date_time.start > datetime.now():
                 future_events.append(event)
                 break
     logging.info(f'{len(future_events)} of {len(events)} are future events')
@@ -173,22 +178,22 @@ def extract_event_details(html_content: str, url: str) -> Event:
     )
 
 
-def get_date_times(details: list[BeautifulSoup]) -> list[str]:
+def get_date_times(details: list[BeautifulSoup]) -> list[Occurrence]:
     for detail in details:
         if HEADER_DATE_TIMES in detail.text:
             return extract_date_times(detail.find_all('p'))
     raise ValueError(f'Time details not found in the provided HTML content: `{details}`')
 
 
-def extract_date_times(p_elems: list[BeautifulSoup]) -> list[str]:
+def extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     date_times = []
     for dt in p_elems:
         date_str = dt.find('strong').text.strip()
         start_time_str = dt.text.partition('-')[0].split()[-1]
-        # end_time_str = dt.text.partition('-')[-1].split()[-1]
-        dt_str = f'{date_str} {start_time_str}'
-        start_datetime = parse_polish_date(dt_str)
-        date_times.append(start_datetime.isoformat())
+        end_time_str = dt.text.partition('-')[-1].split()[-1]
+        start_datetime = parse_polish_date(f'{date_str} {start_time_str}')
+        end_timestamp = parse_polish_date(f'{date_str} {end_time_str}')
+        date_times.append(Occurrence(start=start_datetime, end=end_timestamp))
     return date_times
 
 
@@ -258,11 +263,11 @@ def prepare_gancio_event(
         place_name=event.place_name,
         place_address=event.place_address,
         online_locations=[event.url],
-        start_datetime=int(datetime.fromisoformat(date_times[0]).timestamp()),
+        start_datetime=int(event.date_times[0].start.timestamp()),
         # Assuming these are not multidate events
         multidate=0,
         tags=json.dumps(['swing']),
-        recurrent={'days': date_times},
+        recurrent={'days': [occ.start.isoformat() for occ in date_times]},
         image=image,
     )
 
