@@ -271,8 +271,10 @@ def prepare_gancio_event(
                 online_locations=[event.url],
                 start_datetime=int(dt.start.timestamp()),
                 end_datetime=end_datetime,
-                # Assuming these are not multidate events
-                multidate=0,
+                # Always set event as multidate, as it doesn't break
+                # anything, and without it mutlidate events are
+                # incorrectly added.
+                multidate=1,
                 tags=json.dumps(['swing']),
                 image=image,
             )
