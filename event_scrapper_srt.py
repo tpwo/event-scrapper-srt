@@ -6,6 +6,8 @@ import os
 import urllib.parse
 import urllib.request
 from collections.abc import Callable
+from collections.abc import Sequence
+from collections.abc import Sized
 from dataclasses import asdict
 from dataclasses import dataclass
 from datetime import datetime
@@ -106,12 +108,16 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
     ns = {'ns': str(schema_parts[0])}
 
     elements = root.xpath('//ns:url', namespaces=ns)
-    logging.info(f'Found {len(elements)} events in the sitemap')
+    if isinstance(elements, Sized):
+        logging.info(f'Found {len(elements)} events in the sitemap')
+    else:
+        raise SystemExit(f'No events found in the sitemap. `elements`: `{elements}')
 
     events = []
     for elem in reversed(elements):
-        url = elem.xpath('ns:loc/text()', namespaces=ns)[0]
-        lastmod = elem.xpath('ns:lastmod/text()', namespaces=ns)[0]
+        assert isinstance(elem, etree._Element)
+        url = get_xpath_value(elem, 'ns:loc/text()', ns)
+        lastmod = get_xpath_value(elem, 'ns:lastmod/text()', ns)
         try:
             lastmod_dt = datetime.fromisoformat(lastmod)
         except ValueError as err:
@@ -125,6 +131,12 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
 
     logging.info(f'Extracted {len(events)} events from the sitemap')
     return events
+
+
+def get_xpath_value(elem: etree._Element, path: str, namespace: dict[str, str]) -> str:
+    all = elem.xpath(path, namespaces=namespace)
+    assert isinstance(all, Sequence)
+    return str(all[0])
 
 
 def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
