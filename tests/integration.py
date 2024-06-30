@@ -6,6 +6,7 @@ These tests should be run like that:
 
     pytest tests/integration.py
 """
+
 from __future__ import annotations
 
 from event_scrapper_srt import add_event_requests
