@@ -237,7 +237,14 @@ def parse_polish_date(date_str: str) -> datetime:
     raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
 
 
-def prepare_gancio_event(event: Event, img_getter: Callable[[str], bytes]) -> GancioEvent:
+def get_image(image_url: str) -> bytes:
+    image_response = urllib.request.urlopen(image_url)
+    return image_response.read()
+
+
+def prepare_gancio_event(
+    event: Event, img_getter: Callable[[str], bytes] = get_image
+) -> GancioEvent:
     date_times = event.date_times
     # Structure based on Gancio API
     # https://gancio.org/dev/api#add-a-new-event
@@ -260,9 +267,6 @@ def prepare_gancio_event(event: Event, img_getter: Callable[[str], bytes]) -> Ga
     )
 
 
-def get_image(image_url: str) -> bytes:
-    image_response = urllib.request.urlopen(image_url)
-    return image_response.read()
 
 
 if __name__ == '__main__':
