@@ -78,6 +78,7 @@ def main() -> None:
     for event in future_events[:5]:
         response = add_event_requests(event)
         logging.info(f'Event added:\n{pformat(response)}')
+        print(''.center(80, '-'))
 
 
 def get_xml_content(sitemap_url: str) -> bytes:
