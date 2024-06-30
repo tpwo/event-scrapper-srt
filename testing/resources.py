@@ -29,7 +29,6 @@ example_event_gancio = GancioEvent(
     start_datetime=1722074400,
     multidate=0,
     tags='["swing"]',
-    recurrent={'days': ['2024-07-27T12:00:00']},
     image=b'',
 )
 
@@ -78,18 +77,6 @@ example_event_recurring_gancio = GancioEvent(
     start_datetime=1720375200,
     multidate=0,
     tags='["swing"]',
-    recurrent={
-        'days': [
-            '2024-07-07T20:00:00',
-            '2024-07-14T20:00:00',
-            '2024-07-21T20:00:00',
-            '2024-07-28T20:00:00',
-            '2024-08-04T20:00:00',
-            '2024-08-11T20:00:00',
-            '2024-08-18T20:00:00',
-            '2024-08-25T20:00:00',
-        ]
-    },
     image=b'',
 )
 

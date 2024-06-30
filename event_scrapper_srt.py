@@ -46,7 +46,6 @@ class GancioEvent(NamedTuple):
     start_datetime: int
     multidate: int
     tags: str
-    recurrent: dict[str, list[str]]
     image: bytes | None
 
 
@@ -250,7 +249,6 @@ def get_image(image_url: str) -> bytes:
 def prepare_gancio_event(
     event: Event, img_getter: Callable[[str], bytes] = get_image
 ) -> GancioEvent:
-    date_times = event.date_times
     # Structure based on Gancio API
     # https://gancio.org/dev/api#add-a-new-event
     if event.image_url:
@@ -267,7 +265,6 @@ def prepare_gancio_event(
         # Assuming these are not multidate events
         multidate=0,
         tags=json.dumps(['swing']),
-        recurrent={'days': [occ.start.isoformat() for occ in date_times]},
         image=image,
     )
 
