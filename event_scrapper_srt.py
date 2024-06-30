@@ -249,30 +249,35 @@ def get_image(image_url: str) -> bytes:
 
 def prepare_gancio_event(
     event: Event, img_getter: Callable[[str], bytes] = get_image
-) -> GancioEvent:
+) -> list[GancioEvent]:
     # Structure based on Gancio API
     # https://gancio.org/dev/api#add-a-new-event
     if event.image_url:
         image = img_getter(event.image_url)
     else:
         image = None
-    if event.date_times[0].end:
-        end_datetime = int(event.date_times[0].end.timestamp())
-    else:
-        end_datetime = None
-    return GancioEvent(
-        title=event.title,
-        description=event.description,
-        place_name=event.place_name,
-        place_address=event.place_address,
-        online_locations=[event.url],
-        start_datetime=int(event.date_times[0].start.timestamp()),
-        end_datetime=end_datetime,
-        # Assuming these are not multidate events
-        multidate=0,
-        tags=json.dumps(['swing']),
-        image=image,
-    )
+    events = []
+    for dt in event.date_times:
+        if dt.end:
+            end_datetime = int(dt.end.timestamp())
+        else:
+            end_datetime = None
+        events.append(
+            GancioEvent(
+                title=event.title,
+                description=event.description,
+                place_name=event.place_name,
+                place_address=event.place_address,
+                online_locations=[event.url],
+                start_datetime=int(dt.start.timestamp()),
+                end_datetime=end_datetime,
+                # Assuming these are not multidate events
+                multidate=0,
+                tags=json.dumps(['swing']),
+                image=image,
+            )
+        )
+    return events
 
 
 def add_event(event: GancioEvent) -> dict[str, object]:
