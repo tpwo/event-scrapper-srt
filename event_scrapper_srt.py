@@ -267,6 +267,14 @@ def prepare_gancio_event(
     )
 
 
+def add_event(event: GancioEvent) -> dict[str, object]:
+    url = 'http://127.0.0.1:13120/api/event'
+    data = json.dumps(event._asdict()).encode()
+    headers = {'Content-Type': 'application/json'}
+    resp = urllib.request.urlopen(
+        urllib.request.Request(url, data=data, headers=headers, method='POST')
+    )
+    return json.load(resp)
 
 
 if __name__ == '__main__':
