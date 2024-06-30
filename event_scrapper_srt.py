@@ -191,11 +191,20 @@ def extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     for dt in p_elems:
         date_str = dt.find('strong').text.strip()
         start_time_str = dt.text.partition('-')[0].split()[-1]
-        end_time_str = dt.text.partition('-')[-1].split()[-1]
         start_datetime = parse_polish_date(f'{date_str} {start_time_str}')
-        end_timestamp = parse_polish_date(f'{date_str} {end_time_str}')
+        end_timestamp = get_end_timestamp(dt.text, date_str)
         date_times.append(Occurrence(start=start_datetime, end=end_timestamp))
     return date_times
+
+
+def get_end_timestamp(dt_text: str, date_str: str) -> datetime | None:
+    try:
+        end_time_str = dt_text.partition('-')[-1].split()[-1]
+    except IndexError:
+        logging.warning(f'No end time found for the date `{dt_text}`, setting to None')
+        return None
+    else:
+        return parse_polish_date(f'{date_str} {end_time_str}')
 
 
 def get_place_name_address(details: list[BeautifulSoup]) -> tuple[str, str]:
