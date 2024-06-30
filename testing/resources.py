@@ -50,21 +50,6 @@ example_event_recurring = Event(
         Occurrence(
             start=datetime.datetime(2024, 7, 21, 20, 0), end=datetime.datetime(2024, 7, 21, 23, 0)
         ),
-        Occurrence(
-            start=datetime.datetime(2024, 7, 28, 20, 0), end=datetime.datetime(2024, 7, 28, 23, 0)
-        ),
-        Occurrence(
-            start=datetime.datetime(2024, 8, 4, 20, 0), end=datetime.datetime(2024, 8, 4, 23, 0)
-        ),
-        Occurrence(
-            start=datetime.datetime(2024, 8, 11, 20, 0), end=datetime.datetime(2024, 8, 11, 23, 0)
-        ),
-        Occurrence(
-            start=datetime.datetime(2024, 8, 18, 20, 0), end=datetime.datetime(2024, 8, 18, 23, 0)
-        ),
-        Occurrence(
-            start=datetime.datetime(2024, 8, 25, 20, 0), end=datetime.datetime(2024, 8, 25, 23, 0)
-        ),
     ],
 )
 
