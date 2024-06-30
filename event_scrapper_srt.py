@@ -19,13 +19,13 @@ HEADER_DATE_TIMES = 'Kiedy?'
 HEADER_PLACE = 'Gdzie?'
 
 
-@dataclass
+@dataclass(frozen=True)
 class SitemapElem:
     url: str
     lastmod: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class Event:
     url: str
     title: str
@@ -36,13 +36,13 @@ class Event:
     date_times: list[Occurrence]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Occurrence:
     start: datetime
     end: datetime | None
 
 
-@dataclass
+@dataclass(frozen=True)
 class GancioEvent:
     title: str
     description: str
