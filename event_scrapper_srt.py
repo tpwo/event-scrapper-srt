@@ -6,9 +6,10 @@ import os
 import urllib.parse
 import urllib.request
 from collections.abc import Callable
+from dataclasses import asdict
+from dataclasses import dataclass
 from datetime import datetime
 from datetime import timezone
-from typing import NamedTuple
 from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
@@ -18,12 +19,14 @@ HEADER_DATE_TIMES = 'Kiedy?'
 HEADER_PLACE = 'Gdzie?'
 
 
-class SitemapElem(NamedTuple):
+@dataclass
+class SitemapElem:
     url: str
     lastmod: str
 
 
-class Event(NamedTuple):
+@dataclass
+class Event:
     url: str
     title: str
     description: str
@@ -33,12 +36,14 @@ class Event(NamedTuple):
     date_times: list[Occurrence]
 
 
-class Occurrence(NamedTuple):
+@dataclass
+class Occurrence:
     start: datetime
     end: datetime | None
 
 
-class GancioEvent(NamedTuple):
+@dataclass
+class GancioEvent:
     title: str
     description: str
     place_name: str
@@ -140,7 +145,7 @@ def dump_events_to_json(events: list[Event], folder: str) -> None:
     filename = f'{folder}/events_{datetime.now().isoformat()}.json'
     with open(filename, 'w', encoding='utf-8') as file:
         json.dump(
-            [event._asdict() for event in events], file, indent=4, ensure_ascii=False, default=str
+            [asdict(event) for event in events], file, indent=4, ensure_ascii=False, default=str
         )
     logging.info(f'Saved event details to `{filename}`')
 
@@ -298,7 +303,7 @@ def prepare_gancio_event(
 
 def add_event(event: GancioEvent) -> dict[str, object]:
     url = 'http://127.0.0.1:13120/api/event'
-    data = json.dumps(event._asdict()).encode()
+    data = json.dumps(asdict(event)).encode()
     headers = {'Content-Type': 'application/json'}
     resp = urllib.request.urlopen(
         urllib.request.Request(url, data=data, headers=headers, method='POST')
