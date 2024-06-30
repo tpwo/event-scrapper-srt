@@ -190,14 +190,10 @@ def extract_event_details(html_content: str, url: str) -> Event:
 
     title = get_title(soup)
     image_url = get_image_url(soup)
-
-    details_class = 'col-md-6 mx-auto'
-    details = soup.find_all('div', class_=details_class)
-
     place_name, place_address = get_place_name_address(soup)
 
     try:
-        date_times = get_date_times(details)
+        date_times = get_date_times(soup)
     except ValueError:
         date_times = []
         logging.info(f'Past event found: no date and time information in `{title}`')
@@ -229,11 +225,11 @@ def get_image_url(soup: BeautifulSoup) -> str | None:
     return None
 
 
-def get_date_times(details: list[BeautifulSoup]) -> list[Occurrence]:
-    for detail in details:
-        if HEADER_DATE_TIMES in detail.text:
-            return extract_date_times(detail.find_all('p'))
-    raise ValueError(f'Time details not found in the provided HTML content: `{details}`')
+def get_date_times(soup: BeautifulSoup) -> list[Occurrence]:
+    for elem in soup.find_all('h5'):
+        if HEADER_DATE_TIMES in elem.text:
+            return extract_date_times(elem.parent.find_all('p'))
+    raise ValueError(f'Time details not found in the provided HTML content: `{soup}`')
 
 
 def extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
