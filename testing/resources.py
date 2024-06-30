@@ -49,9 +49,6 @@ example_event_recurring = Event(
         Occurrence(
             start=datetime.datetime(2024, 7, 14, 20, 0), end=datetime.datetime(2024, 7, 14, 23, 0)
         ),
-        Occurrence(
-            start=datetime.datetime(2024, 7, 21, 20, 0), end=datetime.datetime(2024, 7, 21, 23, 0)
-        ),
     ],
 )
 
@@ -77,18 +74,6 @@ example_event_recurring_gancio = [
         online_locations=['https://example.com/'],
         start_datetime=1720980000,
         end_datetime=1720990800,
-        multidate=0,
-        tags='["swing"]',
-        image=b'',
-    ),
-    GancioEvent(
-        title='Sunday Summer Night | CONIEDZIELNA POTAŃCÓWKA',
-        description='<p>Wyobraźcie sobie letni, niedzielny wieczór… 🌅 Dzień powoli się kończy, ale jednak czegoś brakuje do pełnego spełnienia. Zaczynasz szukać potańcówki tu i tam, i nic nie ma! Kto w niedzielę robi potańcówki? Kto robi imprezy regularnie, tak by nie musieć się zastanawiać i ich szukać? 🤔</p><p>Otóż… MY! 😃 Kochani, zapraszamy Was na Sunday Summer Night! Co niedzielę przez lipiec i sierpień otwieramy nasze studio o 20:00, organizujemy DJ’kę i bawimy się do 23:00. 🎶 </p><p>Bez socialu nie ma tańca, więc zapraszamy wszystkich Lindy Hopersów, tancerzy Solo Jazz, Boogie i Balboa Maniaków na parkiet! 💃🕺 Chcemy stworzyć kolejną okazję do tańczenia i integracji naszej trójmiejskiej społeczności.</p><p>Jeśli jesteś nowy/nowa, przyjdź i poproś kogoś o pokazanie podstawowych kroków. 👟 Tylko ci, którzy spróbowali dołączyć do nas, wiedzą, jak łatwa i przyjemna to sprawa, a nasza społeczność słynie ze swojej otwartości i przyjazności. 🌟</p><p>Do zobaczenia na parkiecie!</p><p>– Coniedziele 7 lipca – 25 sierpnia, Studio SRT, 20:00-23:00</p>',
-        place_name='Studio Swing Revolution Trójmiasto',
-        place_address='ul. Łąkowa 35/38',
-        online_locations=['https://example.com/'],
-        start_datetime=1721584800,
-        end_datetime=1721595600,
         multidate=0,
         tags='["swing"]',
         image=b'',
