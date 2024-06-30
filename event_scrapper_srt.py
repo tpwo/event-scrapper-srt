@@ -15,6 +15,7 @@ from datetime import timezone
 from pprint import pformat
 from zoneinfo import ZoneInfo
 
+import bs4
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
@@ -186,10 +187,8 @@ def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
 def extract_event_details(html_content: str, url: str) -> Event:
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    image_div = soup.find('div', class_='page-header min-vh-80 lazy')
-    image_url = image_div['data-bg'].replace('url(', '').replace(')', '') if image_div else None
-
-    title = soup.find('h1').text.strip()
+    title = get_title(soup)
+    image_url = get_image_url(soup)
 
     details_class = 'col-md-6 mx-auto'
     details = soup.find_all('div', class_=details_class)
@@ -213,6 +212,22 @@ def extract_event_details(html_content: str, url: str) -> Event:
     )
 
 
+def get_title(soup: BeautifulSoup) -> str:
+    if title_raw := soup.find('h1'):
+        return title_raw.text.strip()
+    raise ValueError(f'Title not found in the provided HTML content: `{soup}`')
+
+
+def get_image_url(soup: BeautifulSoup) -> str | None:
+    if image_div := soup.find('div', class_='page-header min-vh-80 lazy'):
+        if isinstance(image_div, bs4.Tag):
+            image_url_function = image_div['data-bg']
+            assert isinstance(image_url_function, str)
+            return image_url_function.partition('(')[-1].partition(')')[0]
+    logging.warning(f'Failed to extract image url from HTML content: `{soup}`')
+    return None
+
+
 def get_date_times(details: list[BeautifulSoup]) -> list[Occurrence]:
     for detail in details:
         if HEADER_DATE_TIMES in detail.text:
@@ -223,11 +238,12 @@ def get_date_times(details: list[BeautifulSoup]) -> list[Occurrence]:
 def extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     date_times = []
     for dt in p_elems:
-        date_str = dt.find('strong').text.strip()
-        start_time_str = dt.text.partition('-')[0].split()[-1]
-        start_datetime = parse_polish_date(f'{date_str} {start_time_str}')
-        end_timestamp = get_end_timestamp(dt.text, date_str)
-        date_times.append(Occurrence(start=start_datetime, end=end_timestamp))
+        if date_str_raw := dt.find('strong'):
+            date_str = date_str_raw.text.strip()
+            start_time_str = dt.text.partition('-')[0].split()[-1]
+            start_datetime = parse_polish_date(f'{date_str} {start_time_str}')
+            end_timestamp = get_end_timestamp(dt.text, date_str)
+            date_times.append(Occurrence(start=start_datetime, end=end_timestamp))
     return date_times
 
 
@@ -244,21 +260,25 @@ def get_end_timestamp(dt_text: str, date_str: str) -> datetime | None:
 def get_place_name_address(details: list[BeautifulSoup]) -> tuple[str, str]:
     for detail in details:
         if HEADER_PLACE in detail.text:
-            place_section_raw = detail.find('p').text
-            # For some reason each time the place value starts with
-            # backtick, so we strip it
-            place_section = place_section_raw.lstrip('`').strip()
-            place_name_raw, _, place_address_raw = place_section.partition(',')
-            return place_name_raw.strip(), place_address_raw.strip()
+            if place_section_raw := detail.find('p'):
+                # For some reason each time the place value starts with
+                # backtick, so we strip it
+                place_section = place_section_raw.text.lstrip('`').strip()
+                place_name_raw, _, place_address_raw = place_section.partition(',')
+                return place_name_raw.strip(), place_address_raw.strip()
     raise ValueError(f'Place details not found in the provided HTML content: `{details}`')
 
 
 def get_description(soup: BeautifulSoup) -> str:
     html_class = 'col-lg-6 justify-content-center d-flex flex-column ps-lg-5 pt-lg-0 pt-3'
-    desc_section = soup.find('div', class_=html_class)
-    desc = desc_section.find('p').decode_contents().strip() if desc_section else ''
-    desc_formatted = ' '.join(desc.replace('\n', '').split())
-    return desc_formatted
+    if desc_section := soup.find('div', class_=html_class):
+        if desc_raw := desc_section.find('p'):
+            if isinstance(desc_raw, bs4.Tag):
+                desc = desc_raw.decode_contents().strip()
+                desc_formatted = ' '.join(desc.replace('\n', '').split())
+                return desc_formatted
+    logging.warning(f'Description not found in the provided HTML content: `{soup}`')
+    return ''
 
 
 # Polish month names mapping
@@ -346,7 +366,7 @@ def add_event_requests(event: GancioEvent) -> dict[str, object]:
         # 'tags': event.tags,
     }
     files = {'image': ('image', event.image, 'application/octet-stream')}
-    response = requests.post(url, data=data, files=files)
+    response = requests.post(url, data=data, files=files)  # type: ignore[arg-type]
 
     response.raise_for_status()
 
