@@ -12,6 +12,7 @@ from datetime import datetime
 from datetime import timezone
 from zoneinfo import ZoneInfo
 
+import requests
 from bs4 import BeautifulSoup
 from lxml import etree
 
@@ -70,7 +71,8 @@ def main() -> None:
     events = get_events(sitemap_elems)
     dump_events_to_json(events, folder='output')
     gancio_events = get_gancio_events(events)
-    get_future_events(gancio_events)
+    future_events = get_future_events(gancio_events)
+    add_event_requests(future_events[0])
 
 
 def get_xml_content(sitemap_url: str) -> bytes:
@@ -304,6 +306,33 @@ def prepare_gancio_event(
             )
         )
     return events
+
+
+def add_event_requests(event: GancioEvent) -> dict[str, object]:
+    """Add an event to Gancio using the requests library.
+
+    TODO:
+    - issue with tags, 500 server error, it worked with urllib
+    - issue with online_locations, it creates a location per character (!)
+    """
+    url = 'http://127.0.0.1:13120/api/event'
+    data = {
+        'title': event.title,
+        'description': event.description,
+        'place_name': event.place_name,
+        'place_address': event.place_address,
+        # 'online_locations': event.online_locations[0],
+        'start_datetime': event.start_datetime,
+        'end_datetime': event.end_datetime,
+        'multidate': 1,
+        # 'tags': event.tags,
+    }
+    files = {'image': ('image', event.image, 'application/octet-stream')}
+    response = requests.post(url, data=data, files=files)
+
+    response.raise_for_status()
+
+    return response.json()
 
 
 def add_event(event: GancioEvent) -> dict[str, object]:
