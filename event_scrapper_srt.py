@@ -20,6 +20,7 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import etree
 
+HEADER_DESCRIPTION = 'Trochę szczegółów'
 HEADER_DATE_TIMES = 'Kiedy?'
 HEADER_PLACE = 'Gdzie?'
 
@@ -270,13 +271,10 @@ def get_place_name_address(details: list[BeautifulSoup]) -> tuple[str, str]:
 
 
 def get_description(soup: BeautifulSoup) -> str:
-    html_class = 'col-lg-6 justify-content-center d-flex flex-column ps-lg-5 pt-lg-0 pt-3'
-    if desc_section := soup.find('div', class_=html_class):
-        if desc_raw := desc_section.find('p'):
-            if isinstance(desc_raw, bs4.Tag):
-                desc = desc_raw.decode_contents().strip()
-                desc_formatted = ' '.join(desc.replace('\n', '').split())
-                return desc_formatted
+    for elem in soup.find_all('h4'):
+        if HEADER_DESCRIPTION in elem.text:
+            if raw := elem.parent.find('p'):
+                return ' '.join(raw.decode_contents().strip().replace('\n', '').split())
     logging.warning(f'Description not found in the provided HTML content: `{soup}`')
     return ''
 

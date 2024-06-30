@@ -10,7 +10,7 @@ from event_scrapper_srt import Occurrence
 example_event = Event(
     url='https://example.com/',
     title='Lindy Hop dla początkujacych | intensywne warsztaty',
-    description='Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy zacząć własnie od niego.',
+    description='<p>Daj się zarazić swingowym bakcylem podczas intensywnych warsztatów od podstaw! Nie musisz nic umieć (większość z nas tak właśnie zaczynała), a jeśli plączą Ci się nogi – wspólnie je rozplączemy. 🙂 Udowodnimy Ci, że taniec może być prosty i przyjemny, a to wszystko w doborowym towarzystwie pozytywnie zakręconych ludzi i przy dźwiękach porywającego do tańca swinga.</p><p>🔸 ZAPISY 🔸<br/> · Zajęcia odbędą się w sobotę 27 lipca (3h, od 12:00-15:00).<br/> · Na zajęciach zmieniamy się w parach.<br/> · Nie potrzebujesz pary do wzięcia udziału w zajęciach. Przy zapisach dbamy o odpowiednie proporcje w grupie.<br/> · Każda osoba musi wypełnić osobny formularz (nawet gdy zapisujesz się w parze).<br/> ❗ Ilość miejsc na zajęciach jest ograniczona.</p>',
     place_name='Studio Swing Revolution Trójmiasto',
     place_address='Łąkowa 35/38, Gdańsk',
     image_url='https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
@@ -29,7 +29,7 @@ example_event = Event(
 example_event_gancio = [
     GancioEvent(
         title='Lindy Hop dla początkujacych | intensywne warsztaty',
-        description='Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy zacząć własnie od niego.',
+        description='<p>Daj się zarazić swingowym bakcylem podczas intensywnych warsztatów od podstaw! Nie musisz nic umieć (większość z nas tak właśnie zaczynała), a jeśli plączą Ci się nogi – wspólnie je rozplączemy. 🙂 Udowodnimy Ci, że taniec może być prosty i przyjemny, a to wszystko w doborowym towarzystwie pozytywnie zakręconych ludzi i przy dźwiękach porywającego do tańca swinga.</p><p>🔸 ZAPISY 🔸<br/> · Zajęcia odbędą się w sobotę 27 lipca (3h, od 12:00-15:00).<br/> · Na zajęciach zmieniamy się w parach.<br/> · Nie potrzebujesz pary do wzięcia udziału w zajęciach. Przy zapisach dbamy o odpowiednie proporcje w grupie.<br/> · Każda osoba musi wypełnić osobny formularz (nawet gdy zapisujesz się w parze).<br/> ❗ Ilość miejsc na zajęciach jest ograniczona.</p>',
         place_name='Studio Swing Revolution Trójmiasto',
         place_address='Łąkowa 35/38, Gdańsk',
         online_locations=['https://example.com/'],
@@ -98,7 +98,7 @@ example_event_recurring_gancio = [
 example_event_past = Event(
     url='https://example.com/',
     title='Swingowa potańcówka nad Motławą',
-    description='Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy zacząć własnie od niego.',
+    description='<p>Zapraszamy serdecznie na kolejną z serii potańcówek swingowych nad Motławą.</p><p>Jest to wspólna inicjatywa 3 szkół tańców swingowych z Trójmiasta (Harlem Beats, Swing Revolution Trójmiasto, Shag College) we współpracy z ORIA MAGIC HOUSE w sercu Gdańska nad samą Motławą, której celem jest zintegrowanie środowiska tancerzy swingowych w Trójmieście. Chcemy również podczas krótkich lekcji pokazowych prezentować tańce swingowe szerszej publiczności, dlatego wpadnij na imprezkę w klimacie swingowym i zabierz ze sobą znajomych</p><p>ORIA MAGIC HOUSE nad Motławą to piękne miejsce, które jest zarówno restauracją, jak i teatrem i galerią sztuki, organizatorem wielu koncertów i imprez kulturalnych. Można tu coś dobrego zjeść i napić się zimowej herbaty</p>',
     place_name='Oria Magic House',
     place_address='Stara Stocznia 4/1, Gdańsk',
     image_url='https://swingrevolution.pl/wp-content/uploads/2022/11/321906541_1231864150738514_2749587281127323943_n.jpg',
