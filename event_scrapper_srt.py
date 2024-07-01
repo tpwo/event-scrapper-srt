@@ -19,6 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import etree
 
+SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 HEADER_DESCRIPTION = 'Trochę szczegółów'
 HEADER_DATE_TIMES = 'Kiedy?'
 HEADER_PLACE = 'Gdzie?'
@@ -69,8 +70,7 @@ class GancioEvent:
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    sitemap_url = 'https://swingrevolution.pl/events-sitemap.xml'
-    xml_content = get_xml_content(sitemap_url)
+    xml_content = get_xml_content(SITEMAP_URL)
     sitemap_elems = get_events_from_sitemap(xml_content)
     events = get_events(sitemap_elems)
     dump_events_to_json(events, folder='output')
