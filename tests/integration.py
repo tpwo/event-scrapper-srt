@@ -9,8 +9,8 @@ These tests should be run like that:
 
 from __future__ import annotations
 
-from event_scrapper_srt import add_event_requests
-from event_scrapper_srt import prepare_gancio_event
+from event_scrapper_srt.main import add_event_requests
+from event_scrapper_srt.main import prepare_gancio_event
 from testing.resources import example_event
 
 

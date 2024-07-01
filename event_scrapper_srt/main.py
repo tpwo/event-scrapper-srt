@@ -115,7 +115,7 @@ class GancioEvent:
     image: bytes | None
 
 
-def main() -> None:
+def main() -> int:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     xml_content = get_xml_content(SITEMAP_URL)
     sitemap_elems = get_events_from_sitemap(xml_content)
@@ -129,6 +129,7 @@ def main() -> None:
         response = add_event_requests(event)
         logging.info(f'Event added:\n{pformat(response)}')
         print(''.center(80, '-'))
+    return 0
 
 
 def get_xml_content(sitemap_url: str) -> bytes:

@@ -6,15 +6,15 @@ import pathlib
 import freezegun
 import pytest
 
-import event_scrapper_srt
-from event_scrapper_srt import SitemapElem
+from event_scrapper_srt import main
+from event_scrapper_srt.main import SitemapElem
 from testing import resources
 
 
 @freezegun.freeze_time('2023-02-28')
 def test_get_events_from_sitemap():
     xml_content = pathlib.Path('testing/example-events-sitemap.xml').read_bytes()
-    actual = event_scrapper_srt.get_events_from_sitemap(xml_content=xml_content, max_age_days=30)
+    actual = main.get_events_from_sitemap(xml_content=xml_content, max_age_days=30)
     expected = [
         SitemapElem(
             url='https://swingrevolution.pl/wydarzenia/sunday-summer-night-coniedzielna-potancowka/',
@@ -41,9 +41,7 @@ def test_get_events_from_sitemap():
 )
 def test_extract_event_details(file, expected):
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    actual = event_scrapper_srt.extract_event_details(
-        html_content=html_content, url='https://example.com/'
-    )
+    actual = main.extract_event_details(html_content=html_content, url='https://example.com/')
     assert actual == expected
 
 
@@ -54,9 +52,7 @@ def test_extract_event_details(file, expected):
 def test_extract_past_event_details(file, expected, caplog):
     caplog.set_level(logging.INFO)
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    actual = event_scrapper_srt.extract_event_details(
-        html_content=html_content, url='https://example.com/'
-    )
+    actual = main.extract_event_details(html_content=html_content, url='https://example.com/')
     assert actual == expected
     assert 'Past event found: no date and time information' in caplog.text
 
@@ -69,7 +65,7 @@ def test_extract_past_event_details(file, expected, caplog):
     ),
 )
 def test_prepare_gancio_event(details, expected):
-    actual = event_scrapper_srt.prepare_gancio_event(event=details, img_getter=get_image_mock)
+    actual = main.prepare_gancio_event(event=details, img_getter=get_image_mock)
     assert actual == expected
 
 
