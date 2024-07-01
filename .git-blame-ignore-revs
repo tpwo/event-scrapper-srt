@@ -1,2 +1,5 @@
 # Rename `event_details` -> `event` in prepare_gancio_event
 d618e8fb2d276d9ba4a01429df0186bf961eb9e5
+
+# Migrate from single-file into multi-file approach
+c451f9d9164b1141bac9d6f38e685964ccebe76d
