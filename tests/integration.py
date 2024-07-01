@@ -9,12 +9,32 @@ These tests should be run like that:
 
 from __future__ import annotations
 
+import shutil
+import subprocess
+import time
+
+import pytest
+
 from event_scrapper_srt.main import add_event_requests
 from event_scrapper_srt.main import prepare_gancio_event
 from testing.resources import example_event
 
 
-def test_add_event():
+@pytest.fixture
+def gancio(tmp_path):
+    shutil.copytree('testing/gancio', tmp_path / 'gancio')
+    out = subprocess.run(
+        ('docker', 'compose', '--file', tmp_path / 'gancio/docker-compose.yml', 'up', '--detach'),
+        check=True,
+    )
+    time.sleep(10)
+    yield out
+    subprocess.run(
+        ('docker', 'compose', '--file', tmp_path / 'gancio/docker-compose.yml', 'stop'), check=True
+    )
+
+
+def test_add_event(gancio):
     gancio_event = prepare_gancio_event(example_event)
     for event in gancio_event:
         expected = {
@@ -23,7 +43,7 @@ def test_add_event():
             'online_locations': [],
             'id': 5,
             'title': 'Lindy Hop dla początkujacych | intensywne warsztaty',
-            'description': 'Genialny w swej prostocie, bez określonych reguł i sztywnej ramy, pełen szaleństwa i ekspresji, najradośniejszy ze wszystkich tańców na świecie – taki jest właśnie Lindy Hop! 😉 Jest on najpopularniejszym tańcem swingowym i przygode ze swingiem polecamy zacząć własnie od niego.',
+            'description': '<p>Daj się zarazić swingowym bakcylem podczas intensywnych warsztatów od podstaw! Nie musisz nic umieć (większość z nas tak właśnie zaczynała), a jeśli plączą Ci się nogi – wspólnie je rozplączemy. 🙂 Udowodnimy Ci, że taniec może być prosty i przyjemny, a to wszystko w doborowym towarzystwie pozytywnie zakręconych ludzi i przy dźwiękach porywającego do tańca swinga.</p><p>🔸 ZAPISY 🔸<br> · Zajęcia odbędą się w sobotę 27 lipca (3h, od 12:00-15:00).<br> · Na zajęciach zmieniamy się w parach.<br> · Nie potrzebujesz pary do wzięcia udziału w zajęciach. Przy zapisach dbamy o odpowiednie proporcje w grupie.<br> · Każda osoba musi wypełnić osobny formularz (nawet gdy zapisujesz się w parze).<br> ❗ Ilość miejsc na zajęciach jest ograniczona.</p>',
             'multidate': '1',
             'start_datetime': '1722074400',
             'end_datetime': '1722085200',
