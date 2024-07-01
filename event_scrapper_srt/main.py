@@ -40,7 +40,7 @@ def main() -> int:
     # There is a default rate limiting 5 requests per 5 minutes, so we
     # iterate only on a few events
     for event in future_events[:5]:
-        response = add_event_requests(event)
+        response = add_event_requests(event, instance_url='http://127.0.0.1:13120')
         logging.info(f'Event added:\n{pformat(response)}')
         print(''.center(80, '-'))
     return 0
@@ -299,14 +299,19 @@ def prepare_gancio_event(
     return events
 
 
-def add_event_requests(event: GancioEvent) -> dict[str, object]:
+def add_event_requests(event: GancioEvent, instance_url: str) -> dict[str, object]:
     """Add an event to Gancio using the requests library.
+
+    Args:
+        event: The event to be added.
+        instance_url: The URL and port of the Gancio instance, e.g.
+                      `http://127.0.0.1:13120` for local running.
 
     TODO:
     - issue with tags, 500 server error, it worked with urllib
     - issue with online_locations, it creates a location per character (!)
     """
-    url = 'http://127.0.0.1:13120/api/event'
+    url = f'{instance_url}/api/event'
     data = {
         'title': event.title,
         'description': event.description,

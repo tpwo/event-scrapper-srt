@@ -74,7 +74,7 @@ def test_add_event(gancio):
                 'updatedAt': '2024-06-30T16:53:41.996Z',
             },
         }
-        actual = add_event_requests(event)
+        actual = add_event_requests(event, instance_url='http://127.0.0.1:13121')
         # Output is dynamic so we only compare selected attributes
         for key in ('title', 'description', 'start_datetime', 'end_datetime'):
             assert actual[key] == expected[key]

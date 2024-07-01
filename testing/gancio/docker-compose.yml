@@ -1,8 +1,8 @@
 services:
-  gancio:
+  gancio-integration-tests:
     restart: always
     image: cisti/gancio
-    container_name: gancio
+    container_name: gancio-integration-tests
     environment:
     - PATH=$PATH:/home/node/.yarn/bin
     - GANCIO_DATA=/home/node/data
@@ -12,4 +12,4 @@ services:
     volumes:
     - ./data:/home/node/data
     ports:
-    - 127.0.0.1:13120:13120
+    - 127.0.0.1:13121:13121

@@ -1,9 +1,9 @@
 {
-  "baseurl": "http://127.0.0.1:13120",
+  "baseurl": "http://127.0.0.1:13121",
   "hostname": "127.0.0.1",
   "server": {
     "host": "0.0.0.0",
-    "port": 13120
+    "port": 13121
   },
   "log_level": "debug",
   "log_path": "/home/node/data/logs",
