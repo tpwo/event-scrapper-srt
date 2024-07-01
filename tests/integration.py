@@ -30,7 +30,7 @@ def gancio(tmp_path):
     time.sleep(10)
     yield out
     subprocess.run(
-        ('docker', 'compose', '--file', tmp_path / 'gancio/docker-compose.yml', 'stop'), check=True
+        ('docker', 'compose', '--file', tmp_path / 'gancio/docker-compose.yml', 'down'), check=True
     )
 
 
