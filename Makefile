@@ -7,14 +7,17 @@ coverage:
 integration-tests:
 	tox run -e integration-tests
 
+GANCIO_DIR=./gancio
+DOCKER_COMPOSE_FILE=$(GANCIO_DIR)/docker-compose.yml
+
 start-dev-instance:
-	docker compose --file ./gancio/docker-compose.yml up --detach
+	docker compose --file $(DOCKER_COMPOSE_FILE) up --detach
 
 stop-dev-instance:
-	docker compose --file ./gancio/docker-compose.yml stop
+	docker compose --file $(DOCKER_COMPOSE_FILE) stop
 
 remove-dev-instance:
-	docker compose --file ./gancio/docker-compose.yml down
-	sudo rm -rf ./gancio/data
+	docker compose --file $(DOCKER_COMPOSE_FILE) down
+	sudo rm -rf $(GANCIO_DIR)/data
 
 .PHONY: tests coverage integration-tests start-dev-instance stop-dev-instance remove-dev-instance
