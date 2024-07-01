@@ -17,4 +17,4 @@ remove-dev-instance:
 	docker compose --file ./gancio/docker-compose.yml down
 	sudo rm -rf ./gancio/data
 
-.PHONY: tests coverage integration-tests start-dev-instance stop-dev-instace remove-dev-instance
+.PHONY: tests coverage integration-tests start-dev-instance stop-dev-instance remove-dev-instance
