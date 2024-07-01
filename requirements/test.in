@@ -1,2 +1,5 @@
+-c runtime.in
 freezegun
 pytest
+covdefaults
+coverage
