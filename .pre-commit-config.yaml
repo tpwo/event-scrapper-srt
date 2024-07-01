@@ -34,6 +34,8 @@ repos:
   - id: check-docstring-first
   - id: check-yaml
   - id: debug-statements
+  - id: name-tests-test
+    exclude: ^tests/integration
   - id: requirements-txt-fixer
   - id: file-contents-sorter
     files: \.(docker|git)ignore
