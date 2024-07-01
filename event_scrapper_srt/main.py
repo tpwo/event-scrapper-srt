@@ -9,7 +9,6 @@ from collections.abc import Callable
 from collections.abc import Sequence
 from collections.abc import Sized
 from dataclasses import asdict
-from dataclasses import dataclass
 from datetime import datetime
 from datetime import timezone
 from pprint import pformat
@@ -19,100 +18,15 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import etree
 
+from event_scrapper_srt.event import Event
+from event_scrapper_srt.event import GancioEvent
+from event_scrapper_srt.event import Occurrence
+from event_scrapper_srt.event import SitemapElem
+
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 HEADER_DESCRIPTION = 'Trochę szczegółów'
 HEADER_DATE_TIMES = 'Kiedy?'
 HEADER_PLACE = 'Gdzie?'
-
-
-@dataclass(frozen=True)
-class SitemapElem:
-    """An entry in the events sitemap.
-
-    Args:
-
-        url: The URL of the event.
-        lastmod: The last modification date of the event in the format
-                 `YYYY-MM-DDTHH:MM:SS+00:00`.
-
-    https://swingrevolution.pl/events-sitemap.xml
-    """
-
-    url: str
-    lastmod: str
-
-
-@dataclass(frozen=True)
-class Event:
-    """Event details extracted from the website.
-
-    Args:
-
-        url: The URL of the event.
-        title: Event name.
-        description: HTML-compatible description of the event.
-        place_name: The name of the place where the event takes place.
-        place_address: The address of the place where the event takes place.
-        image_url: The URL of the image associated with the event.
-        date_times: A list of event occurrence times. A single element
-                    list if event is not recurring.
-    """
-
-    url: str
-    title: str
-    description: str
-    place_name: str
-    place_address: str
-    image_url: str | None
-    date_times: list[Occurrence]
-
-
-@dataclass(frozen=True)
-class Occurrence:
-    """Event occurence time details.
-
-    Args:
-        start: The start date and time of the event.
-        end: The end date and time of the event. `None` if not available.
-    """
-
-    start: datetime
-    end: datetime | None
-
-
-@dataclass(frozen=True)
-class GancioEvent:
-    """API request used to create a new event in Gancio.
-
-    Documentation:
-    https://gancio.org/dev/api#add-a-new-event
-
-    Args:
-
-        title: Event name.
-        description: HTML-compatible description of the event.
-        place_name: The name of the place where the event takes place.
-        place_address: The address of the place where the event takes place.
-        online_locations: List of URL associated with the event.
-        start_datetime: The start of the event as Unix timestamp.
-        end_datetime: The end of the event as Unix timestamp. `None` if
-                      not available.
-        multidate: 0 or 1 represeting whether the event spans over multiple
-                   days. *Currently* always set to 1.
-        tags: List of tags associated with the event.
-        image: The image associated with the event as bytes. `None` if not available.
-    """
-
-    title: str
-    description: str
-    place_name: str
-    place_address: str
-    online_locations: list[str]
-    start_datetime: int
-    end_datetime: int | None
-    multidate: int
-    tags: list[str]
-    image: bytes | None
 
 
 def main() -> int:

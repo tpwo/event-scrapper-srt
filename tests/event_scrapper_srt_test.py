@@ -7,7 +7,7 @@ import freezegun
 import pytest
 
 from event_scrapper_srt import main
-from event_scrapper_srt.main import SitemapElem
+from event_scrapper_srt.event import SitemapElem
 from testing import resources
 
 

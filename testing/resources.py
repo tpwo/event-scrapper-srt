@@ -3,9 +3,9 @@ from __future__ import annotations
 import datetime
 import zoneinfo
 
-from event_scrapper_srt.main import Event
-from event_scrapper_srt.main import GancioEvent
-from event_scrapper_srt.main import Occurrence
+from event_scrapper_srt.event import Event
+from event_scrapper_srt.event import GancioEvent
+from event_scrapper_srt.event import Occurrence
 
 example_event = Event(
     url='https://example.com/',
