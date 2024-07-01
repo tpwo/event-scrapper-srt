@@ -1,3 +1,6 @@
+venv:
+	tox devenv
+
 test:
 	tox
 
@@ -20,4 +23,4 @@ remove-dev-instance:
 	docker compose --file $(DOCKER_COMPOSE_FILE) down
 	sudo rm -rf $(GANCIO_DIR)/data
 
-.PHONY: test coverage integration-tests start-dev-instance stop-dev-instance remove-dev-instance
+.PHONY: venv test coverage integration-tests start-dev-instance stop-dev-instance remove-dev-instance
