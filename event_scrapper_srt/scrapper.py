@@ -96,24 +96,49 @@ def _get_date_times(soup: BeautifulSoup) -> list[Occurrence]:
 def _extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     date_times = []
     for dt in p_elems:
-        if date_str_raw := dt.find('strong'):
-            date_times.append(_extract_date_time(date_str_raw.text.strip(), dt))
+        if dt.find('strong'):
+            date_times.append(_extract_date_time(dt, tzinfo=ZoneInfo('Europe/Warsaw')))
     return date_times
 
 
-def _extract_date_time(date_str: str, dt: BeautifulSoup) -> Occurrence:
+def _extract_date_time(soup: BeautifulSoup, tzinfo: ZoneInfo) -> Occurrence:
+    """Extracts date and start and end time from the provided string.
+
+    The HTML looks like this:
+
+        <p><strong>DD MONTH YYYY</strong> HH:MM</p>
+        i.e.
+        DD MONTH YYYY HH:MM
+
+        <p><strong>DD MONTH YYYY</strong> HH:MM - HH:MM</p>
+        i.e.
+        DD MONTH YYYY HH:MM - HH:MM
+
+    Note that end time is optional.
+
+    E.g.
+
+        <p><strong>8 listopada 2024</strong> 21:00</p>
+        i.e.
+        8 listopada 2024 21:00
+
+        <p><strong>27 lipca 2024</strong> 12:00 - 15:00</p>
+        i.e.
+        27 lipca 2024 12:00 - 15:00
+    """
+    date_str = soup.find('strong').text.strip()
     date = _parse_polish_date(date_str)
 
-    start_time = dt.text.partition('-')[0].split()[-1]
-    start_dt = datetime.combine(date, _get_time(start_time), tzinfo=ZoneInfo('Europe/Warsaw'))
+    start_time = soup.text.partition('-')[0].split()[-1]
+    start_dt = datetime.combine(date, _get_time(start_time), tzinfo=tzinfo)
 
     try:
-        end_time = dt.text.partition('-')[-1].split()[-1]
+        end_time = soup.text.partition('-')[-1].split()[-1]
     except IndexError:
-        logging.warning(f'No end time found for the date `{dt}`, setting to None')
+        logging.warning(f'No end time found for the date `{soup}`, setting to None')
         end_dt = None
     else:
-        end_dt = datetime.combine(date, _get_time(end_time), tzinfo=ZoneInfo('Europe/Warsaw'))
+        end_dt = datetime.combine(date, _get_time(end_time), tzinfo=tzinfo)
 
     return Occurrence(start=start_dt, end=end_dt)
 
