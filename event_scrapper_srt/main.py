@@ -22,7 +22,7 @@ def main() -> int:
     sitemap_elems = sitemap.get_elements(xml_content)
     events = scrapper.get_events(sitemap_elems)
     dump_events_to_json(events, folder='output')
-    gancio_events = gancio.get_gancio_events(events)
+    gancio_events = gancio.create_events(events)
     # There is a default rate limiting 5 requests per 5 minutes, so we
     # iterate only on a few events
     for event in gancio_events[:5]:

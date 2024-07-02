@@ -14,7 +14,8 @@ from event_scrapper_srt.event import GancioEvent
 from event_scrapper_srt.util import get_url_content
 
 
-def get_gancio_events(scrapped_events: list[Event]) -> list[GancioEvent]:
+def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
+    """Returns objects representing future events for Gancio based on scrapped events."""
     events = []
     for scrapped in scrapped_events:
         events.extend(prepare_event(scrapped))
