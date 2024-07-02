@@ -15,7 +15,7 @@ import requests
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import GancioEvent
 from event_scrapper_srt.scrapper import get_events
-from event_scrapper_srt.sitemap import get_events_from_sitemap
+from event_scrapper_srt.sitemap import get_elements
 from event_scrapper_srt.util import get_url_content
 
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
@@ -24,7 +24,7 @@ SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     xml_content = get_url_content(SITEMAP_URL)
-    sitemap_elems = get_events_from_sitemap(xml_content)
+    sitemap_elems = get_elements(xml_content)
     events = get_events(sitemap_elems)
     dump_events_to_json(events, folder='output')
     gancio_events = get_gancio_events(events)

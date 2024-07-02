@@ -26,7 +26,7 @@ class SitemapElem:
     lastmod: str
 
 
-def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
+def get_elements(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
     """Extracts event URLs and lastmod dates from the sitemap XML content.
 
     Sitemap displays the events from the oldest to the newest, so we
@@ -52,14 +52,14 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
 
     for elem in reversed(elements):
         assert isinstance(elem, etree._Element)
-        url = get_xpath_value(elem, 'ns:loc/text()', ns)
-        lastmod = get_xpath_value(elem, 'ns:lastmod/text()', ns)
+        url = _get_xpath_value(elem, 'ns:loc/text()', ns)
+        lastmod = _get_xpath_value(elem, 'ns:lastmod/text()', ns)
         try:
             lastmod_dt = datetime.fromisoformat(lastmod)
         except ValueError as err:
             logging.warning(f'Failed to parse lastmod date `{lastmod}`. Error: `{err}`')
         else:
-            if event_older_than_max_age_days(lastmod_dt, max_age_days):
+            if _event_older_than(lastmod_dt, max_age_days):
                 logging.debug(f'Event `{url}` is older than {max_age_days} days, skipping')
             else:
                 event = SitemapElem(url=url, lastmod=lastmod)
@@ -69,13 +69,13 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
     return events
 
 
-def get_xpath_value(elem: etree._Element, path: str, namespace: dict[str, str]) -> str:
+def _get_xpath_value(elem: etree._Element, path: str, namespace: dict[str, str]) -> str:
     all = elem.xpath(path, namespaces=namespace)
     assert isinstance(all, Sequence)
     return str(all[0])
 
 
-def event_older_than_max_age_days(dt: datetime, max_age_days: int) -> bool:
+def _event_older_than(dt: datetime, max_age_days: int) -> bool:
     days = (dt - datetime.now(timezone.utc)).days * -1
     logging.debug(f'Event is {days} days old')
     return days > max_age_days
