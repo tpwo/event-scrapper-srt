@@ -11,6 +11,7 @@ import requests
 
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import GancioEvent
+from event_scrapper_srt.util import get_url_content
 
 
 def get_gancio_events(events: list[Event]) -> list[GancioEvent]:
@@ -31,13 +32,8 @@ def get_future_events(events: list[GancioEvent]) -> list[GancioEvent]:
     return future_events
 
 
-def get_image(image_url: str) -> bytes:
-    image_response = urllib.request.urlopen(image_url)
-    return image_response.read()
-
-
 def prepare_gancio_event(
-    event: Event, img_getter: Callable[[str], bytes] = get_image
+    event: Event, img_getter: Callable[[str], bytes] = get_url_content
 ) -> list[GancioEvent]:
     if event.image_url:
         image = img_getter(event.image_url)
