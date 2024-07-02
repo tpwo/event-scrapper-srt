@@ -21,7 +21,7 @@ from testing.resources import example_event
 
 
 @pytest.fixture
-def gancio(tmp_path):
+def gancio_instance(tmp_path):
     shutil.copytree('testing/gancio', tmp_path / 'gancio')
     out = subprocess.run(
         ('docker', 'compose', '--file', tmp_path / 'gancio/docker-compose.yml', 'up', '--detach'),
@@ -34,7 +34,7 @@ def gancio(tmp_path):
     )
 
 
-def test_add_event(gancio):
+def test_add_event(gancio_instance):
     gancio_event = prepare_event(example_event)
     for event in gancio_event:
         expected = {
