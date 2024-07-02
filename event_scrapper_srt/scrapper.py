@@ -19,11 +19,6 @@ HEADER_PLACE = 'Gdzie?'
 HEADER_DESCRIPTION = 'Trochę szczegółów'
 
 
-def get_xml_content(sitemap_url: str) -> bytes:
-    with urllib.request.urlopen(sitemap_url) as response:
-        return response.read()
-
-
 def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
     """Extracts event URLs and lastmod dates from the sitemap XML content.
 
