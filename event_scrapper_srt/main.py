@@ -9,7 +9,6 @@ from pprint import pformat
 
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.gancio import add_event_requests
-from event_scrapper_srt.gancio import get_future_events
 from event_scrapper_srt.gancio import get_gancio_events
 from event_scrapper_srt.scrapper import get_events
 from event_scrapper_srt.sitemap import get_elements
@@ -25,10 +24,9 @@ def main() -> int:
     events = get_events(sitemap_elems)
     dump_events_to_json(events, folder='output')
     gancio_events = get_gancio_events(events)
-    future_events = get_future_events(gancio_events)
     # There is a default rate limiting 5 requests per 5 minutes, so we
     # iterate only on a few events
-    for event in future_events[:5]:
+    for event in gancio_events[:5]:
         response = add_event_requests(event, instance_url='http://127.0.0.1:13120')
         logging.info(f'Event added:\n{pformat(response)}')
         print(''.center(80, '-'))

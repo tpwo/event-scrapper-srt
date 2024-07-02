@@ -14,22 +14,19 @@ from event_scrapper_srt.event import GancioEvent
 from event_scrapper_srt.util import get_url_content
 
 
-def get_gancio_events(events: list[Event]) -> list[GancioEvent]:
-    gancio_events = []
-    for event in events:
-        gancio_events.extend(prepare_gancio_event(event))
-    logging.info(f'Prepared {len(gancio_events)} events for Gancio')
-    return gancio_events
+def get_gancio_events(scrapped_events: list[Event]) -> list[GancioEvent]:
+    events = []
+    for scrapped in scrapped_events:
+        events.extend(prepare_gancio_event(scrapped))
+    logging.info(f'Prepared {len(events)} events for Gancio')
 
-
-def get_future_events(events: list[GancioEvent]) -> list[GancioEvent]:
-    """Filters out past events."""
     future_events = []
     for event in events:
         if datetime.fromtimestamp(event.start_datetime) > datetime.now():
             future_events.append(event)
-    logging.info(f'{len(future_events)} of {len(events)} are future events')
-    return future_events
+
+    logging.info(f'Including only future events [{len(future_events)} of {len(events)}]')
+    return events
 
 
 def prepare_gancio_event(
