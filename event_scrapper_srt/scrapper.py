@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import datetime
 from datetime import time
 from zoneinfo import ZoneInfo
@@ -17,10 +18,12 @@ HEADER_PLACE = 'Gdzie?'
 HEADER_DESCRIPTION = 'Trochę szczegółów'
 
 
-def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
+def get_events(
+    sitemap_elems: list[SitemapElem], html_getter: Callable[[str], bytes] = util.get_url_content
+) -> list[Event]:
     events = []
     for event in sitemap_elems:
-        html_content = util.get_url_content(event.url).decode()
+        html_content = html_getter(event.url).decode()
         events.append(extract_event_details(html_content, event.url))
     logging.info(f'Extracted details for {len(events)} events')
     return events
