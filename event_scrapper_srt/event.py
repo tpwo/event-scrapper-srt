@@ -5,19 +5,6 @@ from datetime import datetime
 
 
 @dataclass(frozen=True)
-class Occurrence:
-    """Event occurence time details.
-
-    Args:
-        start: The start date and time of the event.
-        end: The end date and time of the event. `None` if not available.
-    """
-
-    start: datetime
-    end: datetime | None
-
-
-@dataclass(frozen=True)
 class Event:
     """Event details extracted from the website.
 
@@ -40,6 +27,19 @@ class Event:
     place_address: str
     image_url: str | None
     date_times: list[Occurrence]
+
+
+@dataclass(frozen=True)
+class Occurrence:
+    """Event occurence time details.
+
+    Args:
+        start: The start date and time of the event.
+        end: The end date and time of the event. `None` if not available.
+    """
+
+    start: datetime
+    end: datetime | None
 
 
 @dataclass(frozen=True)
