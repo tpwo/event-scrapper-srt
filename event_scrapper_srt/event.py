@@ -5,23 +5,6 @@ from datetime import datetime
 
 
 @dataclass(frozen=True)
-class SitemapElem:
-    """An entry in the events sitemap.
-
-    Args:
-
-        url: The URL of the event.
-        lastmod: The last modification date of the event in the format
-                 `YYYY-MM-DDTHH:MM:SS+00:00`.
-
-    https://swingrevolution.pl/events-sitemap.xml
-    """
-
-    url: str
-    lastmod: str
-
-
-@dataclass(frozen=True)
 class Occurrence:
     """Event occurence time details.
 

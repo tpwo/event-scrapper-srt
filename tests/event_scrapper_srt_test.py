@@ -8,14 +8,15 @@ import pytest
 
 from event_scrapper_srt import main
 from event_scrapper_srt import scrapper
-from event_scrapper_srt.event import SitemapElem
+from event_scrapper_srt import sitemap
+from event_scrapper_srt.sitemap import SitemapElem
 from testing import resources
 
 
 @freezegun.freeze_time('2023-02-28')
 def test_get_events_from_sitemap():
     xml_content = pathlib.Path('testing/example-events-sitemap.xml').read_bytes()
-    actual = scrapper.get_events_from_sitemap(xml_content=xml_content, max_age_days=30)
+    actual = sitemap.get_events_from_sitemap(xml_content=xml_content, max_age_days=30)
     expected = [
         SitemapElem(
             url='https://swingrevolution.pl/wydarzenia/sunday-summer-night-coniedzielna-potancowka/',

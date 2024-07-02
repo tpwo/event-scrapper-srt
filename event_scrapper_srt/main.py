@@ -15,7 +15,7 @@ import requests
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import GancioEvent
 from event_scrapper_srt.scrapper import get_events
-from event_scrapper_srt.scrapper import get_events_from_sitemap
+from event_scrapper_srt.sitemap import get_events_from_sitemap
 from event_scrapper_srt.util import get_url_content
 
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
