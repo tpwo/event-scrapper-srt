@@ -12,9 +12,13 @@ from event_scrapper_srt import util
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import Occurrence
 
-HEADER_DATE_TIMES = 'Kiedy?'
-HEADER_PLACE = 'Gdzie?'
-HEADER_DESCRIPTION = 'Trochę szczegółów'
+
+class _Header:
+    """HTML headers names in the scrapped webpage."""
+
+    DATE_TIMES = 'Kiedy?'
+    PLACE = 'Gdzie?'
+    DESCRIPTION = 'Trochę szczegółów'
 
 
 def get_events(
@@ -60,7 +64,7 @@ def _get_title(soup: BeautifulSoup) -> str:
 
 def _get_description(soup: BeautifulSoup) -> str:
     for elem in soup.find_all('h4'):
-        if HEADER_DESCRIPTION in elem.text:
+        if _Header.DESCRIPTION in elem.text:
             if raw := elem.parent.find('p'):
                 return ' '.join(raw.decode_contents().strip().replace('\n', '').split())
     logging.warning(f'Description not found in the provided HTML content: `{soup}`')
@@ -69,7 +73,7 @@ def _get_description(soup: BeautifulSoup) -> str:
 
 def _get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
     for elem in soup.find_all('h5'):
-        if HEADER_PLACE in elem.text:
+        if _Header.PLACE in elem.text:
             if place_section_raw := elem.parent.find('p'):
                 # For some reason each time the place value starts with
                 # backtick, so we strip it
@@ -89,7 +93,7 @@ def _get_image_url(soup: BeautifulSoup) -> str | None:
 
 def _get_date_times(soup: BeautifulSoup) -> list[Occurrence]:
     for elem in soup.find_all('h5'):
-        if HEADER_DATE_TIMES in elem.text:
+        if _Header.DATE_TIMES in elem.text:
             return _extract_date_times(elem.parent.find_all('p'))
     raise ValueError(f'Time details not found in the provided HTML content: `{soup}`')
 
