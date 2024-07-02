@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import urllib.request
 from datetime import datetime
+from datetime import time
 from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
@@ -97,21 +98,25 @@ def _extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     for dt in p_elems:
         if date_str_raw := dt.find('strong'):
             date_str = date_str_raw.text.strip()
-            start_time_str = dt.text.partition('-')[0].split()[-1]
-            start_datetime = _parse_polish_date(f'{date_str} {start_time_str}')
-            end_timestamp = _get_end_timestamp(dt.text, date_str)
-            date_times.append(Occurrence(start=start_datetime, end=end_timestamp))
+            date = _parse_polish_date(date_str)
+
+            start_time = dt.text.partition('-')[0].split()[-1]
+            start_dt = datetime.combine(
+                date, _get_time(start_time), tzinfo=ZoneInfo('Europe/Warsaw')
+            )
+
+            try:
+                end_time = dt.text.partition('-')[-1].split()[-1]
+            except IndexError:
+                logging.warning(f'No end time found for the date `{dt}`, setting to None')
+                end_dt = None
+            else:
+                end_dt = datetime.combine(
+                    date, _get_time(end_time), tzinfo=ZoneInfo('Europe/Warsaw')
+                )
+
+            date_times.append(Occurrence(start=start_dt, end=end_dt))
     return date_times
-
-
-def _get_end_timestamp(dt_text: str, date_str: str) -> datetime | None:
-    try:
-        end_time_str = dt_text.partition('-')[-1].split()[-1]
-    except IndexError:
-        logging.warning(f'No end time found for the date `{dt_text}`, setting to None')
-        return None
-    else:
-        return _parse_polish_date(f'{date_str} {end_time_str}')
 
 
 MONTHS_PL = {
@@ -133,8 +138,10 @@ MONTHS_PL = {
 def _parse_polish_date(date_str: str) -> datetime:
     for pl_month, month_num in MONTHS_PL.items():
         if pl_month in date_str:
-            date_str = date_str.replace(pl_month, f'{month_num:02}')
-            return datetime.strptime(date_str, '%d %m %Y %H:%M').replace(
-                tzinfo=ZoneInfo('Europe/Warsaw')
-            )
+            return datetime.strptime(date_str.replace(pl_month, f'{month_num:02}'), '%d %m %Y')
     raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
+
+
+def _get_time(time_str: str) -> time:
+    hour, _, minute = time_str.partition(':')
+    return time(int(hour), int(minute))
