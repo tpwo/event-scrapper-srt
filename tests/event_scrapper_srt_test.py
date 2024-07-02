@@ -7,6 +7,7 @@ import freezegun
 import pytest
 
 from event_scrapper_srt import main
+from event_scrapper_srt import scrapper
 from event_scrapper_srt.event import SitemapElem
 from testing import resources
 
@@ -14,7 +15,7 @@ from testing import resources
 @freezegun.freeze_time('2023-02-28')
 def test_get_events_from_sitemap():
     xml_content = pathlib.Path('testing/example-events-sitemap.xml').read_bytes()
-    actual = main.get_events_from_sitemap(xml_content=xml_content, max_age_days=30)
+    actual = scrapper.get_events_from_sitemap(xml_content=xml_content, max_age_days=30)
     expected = [
         SitemapElem(
             url='https://swingrevolution.pl/wydarzenia/sunday-summer-night-coniedzielna-potancowka/',
@@ -41,7 +42,7 @@ def test_get_events_from_sitemap():
 )
 def test_extract_event_details(file, expected):
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    actual = main.extract_event_details(html_content=html_content, url='https://example.com/')
+    actual = scrapper.extract_event_details(html_content=html_content, url='https://example.com/')
     assert actual == expected
 
 
@@ -52,7 +53,7 @@ def test_extract_event_details(file, expected):
 def test_extract_past_event_details(file, expected, caplog):
     caplog.set_level(logging.INFO)
     html_content = pathlib.Path(f'testing/{file}').read_text()
-    actual = main.extract_event_details(html_content=html_content, url='https://example.com/')
+    actual = scrapper.extract_event_details(html_content=html_content, url='https://example.com/')
     assert actual == expected
     assert 'Past event found: no date and time information' in caplog.text
 
