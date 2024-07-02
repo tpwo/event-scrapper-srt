@@ -29,12 +29,12 @@ def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
 def extract_event_details(html_content: str, url: str) -> Event:
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    title = get_title(soup)
-    image_url = get_image_url(soup)
-    place_name, place_address = get_place_name_address(soup)
+    title = _get_title(soup)
+    image_url = _get_image_url(soup)
+    place_name, place_address = _get_place_name_address(soup)
 
     try:
-        date_times = get_date_times(soup)
+        date_times = _get_date_times(soup)
     except ValueError:
         date_times = []
         logging.info(f'Past event found: no date and time information in `{title}`')
@@ -42,7 +42,7 @@ def extract_event_details(html_content: str, url: str) -> Event:
     return Event(
         url=url,
         title=title,
-        description=get_description(soup),
+        description=_get_description(soup),
         place_name=place_name,
         place_address=place_address,
         image_url=image_url,
@@ -50,13 +50,13 @@ def extract_event_details(html_content: str, url: str) -> Event:
     )
 
 
-def get_title(soup: BeautifulSoup) -> str:
+def _get_title(soup: BeautifulSoup) -> str:
     for elem in soup.find_all('h1'):
         return elem.text.strip()
     raise ValueError(f'Title not found in the provided HTML content: `{soup}`')
 
 
-def get_description(soup: BeautifulSoup) -> str:
+def _get_description(soup: BeautifulSoup) -> str:
     for elem in soup.find_all('h4'):
         if HEADER_DESCRIPTION in elem.text:
             if raw := elem.parent.find('p'):
@@ -65,7 +65,7 @@ def get_description(soup: BeautifulSoup) -> str:
     return ''
 
 
-def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
+def _get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
     for elem in soup.find_all('h5'):
         if HEADER_PLACE in elem.text:
             if place_section_raw := elem.parent.find('p'):
@@ -77,7 +77,7 @@ def get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
     raise ValueError(f'Place details not found in the provided HTML content: `{soup}`')
 
 
-def get_image_url(soup: BeautifulSoup) -> str | None:
+def _get_image_url(soup: BeautifulSoup) -> str | None:
     for elem in soup.find_all('header'):
         for div in elem.find_all('div'):
             return div['data-bg'].partition('(')[-1].partition(')')[0]
@@ -85,33 +85,33 @@ def get_image_url(soup: BeautifulSoup) -> str | None:
     return None
 
 
-def get_date_times(soup: BeautifulSoup) -> list[Occurrence]:
+def _get_date_times(soup: BeautifulSoup) -> list[Occurrence]:
     for elem in soup.find_all('h5'):
         if HEADER_DATE_TIMES in elem.text:
-            return extract_date_times(elem.parent.find_all('p'))
+            return _extract_date_times(elem.parent.find_all('p'))
     raise ValueError(f'Time details not found in the provided HTML content: `{soup}`')
 
 
-def extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
+def _extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     date_times = []
     for dt in p_elems:
         if date_str_raw := dt.find('strong'):
             date_str = date_str_raw.text.strip()
             start_time_str = dt.text.partition('-')[0].split()[-1]
-            start_datetime = parse_polish_date(f'{date_str} {start_time_str}')
-            end_timestamp = get_end_timestamp(dt.text, date_str)
+            start_datetime = _parse_polish_date(f'{date_str} {start_time_str}')
+            end_timestamp = _get_end_timestamp(dt.text, date_str)
             date_times.append(Occurrence(start=start_datetime, end=end_timestamp))
     return date_times
 
 
-def get_end_timestamp(dt_text: str, date_str: str) -> datetime | None:
+def _get_end_timestamp(dt_text: str, date_str: str) -> datetime | None:
     try:
         end_time_str = dt_text.partition('-')[-1].split()[-1]
     except IndexError:
         logging.warning(f'No end time found for the date `{dt_text}`, setting to None')
         return None
     else:
-        return parse_polish_date(f'{date_str} {end_time_str}')
+        return _parse_polish_date(f'{date_str} {end_time_str}')
 
 
 MONTHS_PL = {
@@ -130,7 +130,7 @@ MONTHS_PL = {
 }
 
 
-def parse_polish_date(date_str: str) -> datetime:
+def _parse_polish_date(date_str: str) -> datetime:
     for pl_month, month_num in MONTHS_PL.items():
         if pl_month in date_str:
             date_str = date_str.replace(pl_month, f'{month_num:02}')
