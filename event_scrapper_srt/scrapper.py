@@ -22,11 +22,11 @@ class _Header:
 
 
 def get_events(
-    urls: list[str], html_getter: Callable[[str], bytes] = util.get_url_content
+    urls: list[str], content_getter: Callable[[str], bytes] = util.get_url_content
 ) -> list[Event]:
     events = []
     for url in urls:
-        html_content = html_getter(url).decode()
+        html_content = content_getter(url).decode()
         events.append(_extract_event_details(html_content, url))
     logging.info(f'Extracted details for {len(events)} events')
     return events
