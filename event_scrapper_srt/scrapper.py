@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import logging
-import urllib.request
 from datetime import datetime
 from datetime import time
 from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 
+from event_scrapper_srt import util
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import Occurrence
 from event_scrapper_srt.sitemap import SitemapElem
@@ -20,9 +20,8 @@ HEADER_DESCRIPTION = 'Trochę szczegółów'
 def get_events(sitemap_elems: list[SitemapElem]) -> list[Event]:
     events = []
     for event in sitemap_elems:
-        with urllib.request.urlopen(event.url) as response:
-            html_content = response.read().decode('utf-8')
-            events.append(extract_event_details(html_content, event.url))
+        html_content = util.get_url_content(event.url).decode()
+        events.append(extract_event_details(html_content, event.url))
     logging.info(f'Extracted details for {len(events)} events')
     return events
 
