@@ -16,10 +16,12 @@ from testing import resources
         ('example-event-recurring.html', [resources.example_event_recurring]),
     ),
 )
-def test_get_events(url, expected):
+def test_get_events(url, expected, caplog):
+    caplog.set_level(logging.INFO)
     actual = scrapper.get_events([f'testing/{url}'], html_getter=get_html_fake)
     assert actual[0] == expected[0]
     assert len(actual) == len(expected) == 1
+    assert 'Extracted details for 1 events' in caplog.text
 
 
 @pytest.mark.parametrize(
