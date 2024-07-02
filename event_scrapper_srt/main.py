@@ -7,7 +7,6 @@ import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from collections.abc import Sequence
-from collections.abc import Sized
 from dataclasses import asdict
 from datetime import datetime
 from datetime import timezone
@@ -71,12 +70,10 @@ def get_events_from_sitemap(xml_content: bytes, max_age_days: int = 30) -> list[
     ns = {'ns': str(schema_parts[0])}
 
     elements = root.xpath('//ns:url', namespaces=ns)
-    if isinstance(elements, Sized):
-        logging.info(f'Found {len(elements)} events in the sitemap')
-    else:
-        raise SystemExit(f'No events found in the sitemap. `elements`: `{elements}')
 
+    logging.info(f'Found {len(elements)} events in the sitemap')
     events = []
+
     for elem in reversed(elements):
         assert isinstance(elem, etree._Element)
         url = get_xpath_value(elem, 'ns:loc/text()', ns)
