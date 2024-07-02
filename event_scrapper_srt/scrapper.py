@@ -11,7 +11,6 @@ from bs4 import BeautifulSoup
 from event_scrapper_srt import util
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import Occurrence
-from event_scrapper_srt.sitemap import SitemapElem
 
 HEADER_DATE_TIMES = 'Kiedy?'
 HEADER_PLACE = 'Gdzie?'
@@ -19,12 +18,12 @@ HEADER_DESCRIPTION = 'Trochę szczegółów'
 
 
 def get_events(
-    sitemap_elems: list[SitemapElem], html_getter: Callable[[str], bytes] = util.get_url_content
+    urls: list[str], html_getter: Callable[[str], bytes] = util.get_url_content
 ) -> list[Event]:
     events = []
-    for event in sitemap_elems:
-        html_content = html_getter(event.url).decode()
-        events.append(extract_event_details(html_content, event.url))
+    for url in urls:
+        html_content = html_getter(url).decode()
+        events.append(extract_event_details(html_content, url))
     logging.info(f'Extracted details for {len(events)} events')
     return events
 
