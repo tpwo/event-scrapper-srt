@@ -8,6 +8,14 @@ from datetime import timezone
 
 from lxml import etree
 
+from event_scrapper_srt import util
+
+
+def get_urls(sitemap_url: str) -> list[str]:
+    """Extracts event URLs from the provided sitemap URL."""
+    xml_content = util.get_url_content(sitemap_url)
+    return [sm.url for sm in get_elements(xml_content)]
+
 
 @dataclass(frozen=True)
 class SitemapElem:

@@ -10,7 +10,6 @@ from pprint import pformat
 from event_scrapper_srt import gancio
 from event_scrapper_srt import scrapper
 from event_scrapper_srt import sitemap
-from event_scrapper_srt import util
 from event_scrapper_srt.event import Event
 
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
@@ -18,9 +17,7 @@ SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    xml_content = util.get_url_content(SITEMAP_URL)
-    urls = [sm.url for sm in sitemap.get_elements(xml_content)]
-    events = scrapper.get_events(urls)
+    events = scrapper.get_events(sitemap.get_urls(SITEMAP_URL))
     dump_events_to_json(events, folder='output')
     gancio_events = gancio.create_events(events)
     # There is a default rate limiting 5 requests per 5 minutes, so we
