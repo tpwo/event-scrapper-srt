@@ -28,5 +28,7 @@ jobs:
         python-version: '3.11'
     - name: Install dependencies
       run: python -m pip install tox
-    - name: Run tests
+    - name: Run unit tests
       run: tox run -e coverage
+    - name: Run integration tests
+      run: tox run -e integration-tests
