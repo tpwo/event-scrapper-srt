@@ -33,6 +33,10 @@ def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
 def prepare_event(
     event: Event, img_getter: Callable[[str], bytes] = get_url_content
 ) -> list[GancioEvent]:
+    """Prepares one or more Gancio event from a single scrapped event.
+
+    Skips past events.
+    """
     if event.image_url:
         image = img_getter(event.image_url)
     else:
@@ -60,6 +64,8 @@ def prepare_event(
                 image=image,
             )
         )
+    if not events:
+        logging.info(f'No Gancio events created: no `date_times` in scrapped `{event.title}`')
     return events
 
 
