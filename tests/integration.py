@@ -15,8 +15,8 @@ import time
 
 import pytest
 
-from event_scrapper_srt.main import add_event_requests
-from event_scrapper_srt.main import prepare_gancio_event
+from event_scrapper_srt.gancio import add_event_requests
+from event_scrapper_srt.gancio import prepare_gancio_event
 from testing.resources import example_event
 
 

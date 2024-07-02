@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from event_scrapper_srt import main
+from event_scrapper_srt import gancio
 from testing import resources
 
 
@@ -14,7 +14,7 @@ from testing import resources
     ),
 )
 def test_prepare_gancio_event(details, expected):
-    actual = main.prepare_gancio_event(event=details, img_getter=get_image_mock)
+    actual = gancio.prepare_gancio_event(event=details, img_getter=get_image_mock)
     assert actual == expected
 
 
