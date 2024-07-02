@@ -97,26 +97,25 @@ def _extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
     date_times = []
     for dt in p_elems:
         if date_str_raw := dt.find('strong'):
-            date_str = date_str_raw.text.strip()
-            date = _parse_polish_date(date_str)
-
-            start_time = dt.text.partition('-')[0].split()[-1]
-            start_dt = datetime.combine(
-                date, _get_time(start_time), tzinfo=ZoneInfo('Europe/Warsaw')
-            )
-
-            try:
-                end_time = dt.text.partition('-')[-1].split()[-1]
-            except IndexError:
-                logging.warning(f'No end time found for the date `{dt}`, setting to None')
-                end_dt = None
-            else:
-                end_dt = datetime.combine(
-                    date, _get_time(end_time), tzinfo=ZoneInfo('Europe/Warsaw')
-                )
-
-            date_times.append(Occurrence(start=start_dt, end=end_dt))
+            date_times.append(_extract_date_time(date_str_raw.text.strip(), dt))
     return date_times
+
+
+def _extract_date_time(date_str: str, dt: BeautifulSoup) -> Occurrence:
+    date = _parse_polish_date(date_str)
+
+    start_time = dt.text.partition('-')[0].split()[-1]
+    start_dt = datetime.combine(date, _get_time(start_time), tzinfo=ZoneInfo('Europe/Warsaw'))
+
+    try:
+        end_time = dt.text.partition('-')[-1].split()[-1]
+    except IndexError:
+        logging.warning(f'No end time found for the date `{dt}`, setting to None')
+        end_dt = None
+    else:
+        end_dt = datetime.combine(date, _get_time(end_time), tzinfo=ZoneInfo('Europe/Warsaw'))
+
+    return Occurrence(start=start_dt, end=end_dt)
 
 
 MONTHS_PL = {
