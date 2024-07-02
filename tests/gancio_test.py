@@ -28,14 +28,24 @@ def test_prepare_gancio_event(details, expected):
         resources.example_event_recurring,
     ),
 )
-# Events are older than the frozen time
 @freezegun.freeze_time('2025-01-01')
-def test_prepare_gancio_event_past(details, caplog):
+def test_prepare_gancio_event_skip_all(details, caplog):
     caplog.set_level(logging.INFO)
     actual = gancio.prepare_event(event=details, img_getter=get_image_mock)
     assert actual == []
     assert 'Past event occurence found in scrapped' in caplog.text
     assert 'Prepared 0 events for Gancio' in caplog.text
+
+
+@freezegun.freeze_time('2024-07-10')
+def test_prepare_gancio_event_one_skip_one_create(caplog):
+    caplog.set_level(logging.INFO)
+    actual = gancio.prepare_event(
+        event=resources.example_event_recurring, img_getter=get_image_mock
+    )
+    assert actual == [resources.example_event_recurring_gancio[-1]]
+    assert 'Prepared 1 events for Gancio' in caplog.text
+    assert 'Skipped 1 of 2 scrapped occurrences' in caplog.text
 
 
 def test_prepare_gancio_event_no_date_times_found(caplog):
