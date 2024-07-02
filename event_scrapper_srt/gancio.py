@@ -17,7 +17,7 @@ from event_scrapper_srt.util import get_url_content
 def get_gancio_events(scrapped_events: list[Event]) -> list[GancioEvent]:
     events = []
     for scrapped in scrapped_events:
-        events.extend(prepare_gancio_event(scrapped))
+        events.extend(prepare_event(scrapped))
     logging.info(f'Prepared {len(events)} events for Gancio')
 
     future_events = []
@@ -29,7 +29,7 @@ def get_gancio_events(scrapped_events: list[Event]) -> list[GancioEvent]:
     return events
 
 
-def prepare_gancio_event(
+def prepare_event(
     event: Event, img_getter: Callable[[str], bytes] = get_url_content
 ) -> list[GancioEvent]:
     if event.image_url:

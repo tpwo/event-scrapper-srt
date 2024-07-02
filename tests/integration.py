@@ -16,7 +16,7 @@ import time
 import pytest
 
 from event_scrapper_srt.gancio import add_event_requests
-from event_scrapper_srt.gancio import prepare_gancio_event
+from event_scrapper_srt.gancio import prepare_event
 from testing.resources import example_event
 
 
@@ -35,7 +35,7 @@ def gancio(tmp_path):
 
 
 def test_add_event(gancio):
-    gancio_event = prepare_gancio_event(example_event)
+    gancio_event = prepare_event(example_event)
     for event in gancio_event:
         expected = {
             'likes': [],

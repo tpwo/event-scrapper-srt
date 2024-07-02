@@ -14,7 +14,7 @@ from testing import resources
     ),
 )
 def test_prepare_gancio_event(details, expected):
-    actual = gancio.prepare_gancio_event(event=details, img_getter=get_image_mock)
+    actual = gancio.prepare_event(event=details, img_getter=get_image_mock)
     assert actual == expected
 
 
