@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime
@@ -11,9 +12,11 @@ from lxml import etree
 from event_scrapper_srt import util
 
 
-def get_urls(sitemap_url: str) -> list[str]:
+def get_urls(
+    sitemap_url: str, content_getter: Callable[[str], bytes] = util.get_url_content
+) -> list[str]:
     """Extracts event URLs from the provided sitemap URL."""
-    xml_content = util.get_url_content(sitemap_url)
+    xml_content = content_getter(sitemap_url)
     return [sm.url for sm in get_elements(xml_content)]
 
 
