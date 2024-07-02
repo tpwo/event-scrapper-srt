@@ -23,12 +23,12 @@ def get_events(
     events = []
     for url in urls:
         html_content = html_getter(url).decode()
-        events.append(extract_event_details(html_content, url))
+        events.append(_extract_event_details(html_content, url))
     logging.info(f'Extracted details for {len(events)} events')
     return events
 
 
-def extract_event_details(html_content: str, url: str) -> Event:
+def _extract_event_details(html_content: str, url: str) -> Event:
     soup = BeautifulSoup(html_content, 'html.parser')
 
     title = _get_title(soup)
