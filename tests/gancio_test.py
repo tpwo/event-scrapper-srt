@@ -22,17 +22,20 @@ def test_prepare_gancio_event(details, expected):
 
 
 @pytest.mark.parametrize(
-    ('details', 'expected'),
+    ('details'),
     (
-        (resources.example_event, resources.example_event_gancio),
-        (resources.example_event_recurring, resources.example_event_recurring_gancio),
+        resources.example_event,
+        resources.example_event_recurring,
     ),
 )
 # Events are older than the frozen time
 @freezegun.freeze_time('2025-01-01')
-def test_prepare_gancio_event_past(details, expected):
+def test_prepare_gancio_event_past(details, caplog):
+    caplog.set_level(logging.INFO)
     actual = gancio.prepare_event(event=details, img_getter=get_image_mock)
-    assert actual == expected
+    assert actual == []
+    assert 'Past event occurence found in scrapped' in caplog.text
+    assert 'Prepared 0 events for Gancio' in caplog.text
 
 
 def test_prepare_gancio_event_no_date_times_found(caplog):

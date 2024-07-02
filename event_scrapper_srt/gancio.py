@@ -19,14 +19,6 @@ def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
     events = []
     for scrapped in scrapped_events:
         events.extend(prepare_event(scrapped))
-    logging.info(f'Prepared {len(events)} events for Gancio')
-
-    future_events = []
-    for event in events:
-        if datetime.fromtimestamp(event.start_datetime) > datetime.now():
-            future_events.append(event)
-
-    logging.info(f'Including only future events [{len(future_events)} of {len(events)}]')
     return events
 
 
@@ -42,7 +34,12 @@ def prepare_event(
     else:
         image = None
     events = []
+    skipped = 0
     for dt in event.date_times:
+        if dt.start < datetime.now(tz=dt.start.tzinfo):
+            logging.info(f'Past event occurence found in scrapped `{event.title}`')
+            skipped += 1
+            continue
         if dt.end:
             end_datetime = int(dt.end.timestamp())
         else:
@@ -66,6 +63,9 @@ def prepare_event(
         )
     if not events:
         logging.info(f'No Gancio events created: no `date_times` in scrapped `{event.title}`')
+    logging.info(f'Prepared {len(events)} events for Gancio')
+    if skipped > 0:
+        logging.info(f'Skipped {skipped} of {len(event.date_times)} scrapped occurrences')
     return events
 
 
