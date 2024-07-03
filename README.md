@@ -12,13 +12,13 @@ Event Scrapper for <https://swingrevolution.pl/> which then can publish them to 
 
 ### Install tox
 
-```
+```bash
 pip install tox
 ```
 
 ### Create venv
 
-```
+```bash
 make venv
 # or
 tox devenv
@@ -31,7 +31,7 @@ This command:
 
 ### Run unit tests and static checks
 
-```
+```bash
 make test
 # or
 tox run -e py311
@@ -41,7 +41,7 @@ tox run -e py311
 
 `docker` with `compose` needs to be available.
 
-```
+```bash
 make integration-tests
 # or
 tox run -e integration-tests
@@ -49,7 +49,7 @@ tox run -e integration-tests
 
 ### Measure code coverage
 
-```
+```bash
 make coverage
 # or
 tox run -e coverage
@@ -61,13 +61,13 @@ tox run -e coverage
 
 ### To start it
 
-```
+```bash
 make start-dev-instance
 ```
 
 ### To stop it
 
-```
+```bash
 make stop-dev-instance
 ```
 
@@ -75,6 +75,6 @@ make stop-dev-instance
 
 Sudo is required to remove docker artifacts.
 
-```
+```bash
 make remove-dev-instance
 ```
