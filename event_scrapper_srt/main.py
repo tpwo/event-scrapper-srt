@@ -18,11 +18,12 @@ SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     events = scrapper.get_events(sitemap.get_urls(SITEMAP_URL))
+
     dump_events_to_json(events, folder='output')
-    gancio_events = gancio.create_events(events)
+
     # There is a default rate limiting 5 requests per 5 minutes, so we
     # iterate only on a few events
-    for event in gancio_events[:5]:
+    for event in gancio.create_events(events)[:5]:
         response = gancio.add_event_requests(event, instance_url='http://127.0.0.1:13120')
         logging.info(f'Event added:\n{pformat(response)}')
         print(''.center(80, '-'))
@@ -30,6 +31,7 @@ def main() -> int:
 
 
 def dump_events_to_json(events: list[Event], folder: str) -> None:
+    """Saves scrapped events to JSON for better traceability."""
     os.makedirs(folder, exist_ok=True)
     filename = f'{folder}/events_{datetime.now().isoformat()}.json'
     with open(filename, 'w', encoding='utf-8') as file:
