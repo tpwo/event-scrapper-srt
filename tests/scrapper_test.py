@@ -33,7 +33,4 @@ def test_get_events_past(url, expected, caplog):
     actual = scrapper.get_events([f'testing/{url}'], content_getter=fakes.content_getter)
     assert actual[0] == expected[0]
     assert len(actual) == len(expected) == 1
-    assert (
-        'Past event found: no date and time information in `Swingowa potańcówka nad Motławą`'
-        in caplog.text
-    )
+    assert '[Swingowa potańcówka nad Motławą] No date and time information found' in caplog.text

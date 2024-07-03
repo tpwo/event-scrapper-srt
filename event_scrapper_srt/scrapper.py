@@ -43,7 +43,7 @@ def _extract_event_details(html_content: str, url: str) -> Event:
         date_times = _get_date_times(soup)
     except ValueError:
         date_times = []
-        logging.info(f'Past event found: no date and time information in `{title}`')
+        logging.info(f'[{title}] No date and time information found')
 
     return Event(
         url=url,
