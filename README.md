@@ -2,7 +2,7 @@
 
 Event Scrapper for <https://swingrevolution.pl/> which then can publish them to a [Gancio](https://gancio.org/) instance.
 
-## Development
+## How to run?
 
 ### Prerequsites
 
@@ -20,6 +20,8 @@ pip install tox
 
 ```
 make venv
+# or
+tox devenv
 ```
 
 This command:
@@ -31,21 +33,31 @@ This command:
 
 ```
 make test
+# or
+tox run -e py311
 ```
 
 ### Run integration tests
 
+`docker` with `compose` needs to be available.
+
 ```
-make integration-test
+make integration-tests
+# or
+tox run -e integration-tests
 ```
 
 ### Measure code coverage
 
 ```
 make coverage
+# or
+tox run -e coverage
 ```
 
 ## Working with DEV instance of Gancio
+
+`docker` with `compose` needs to be available.
 
 ### To start it
 
