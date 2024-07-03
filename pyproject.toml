@@ -4,3 +4,9 @@ add_imports = [
 ]
 force_single_line = true
 profile = "black"
+
+[tool.coverage.run]
+plugins = ["covdefaults"]
+
+[tool.coverage.report]
+fail_under = 1
