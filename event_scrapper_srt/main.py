@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 import os
@@ -13,18 +14,52 @@ from event_scrapper_srt import sitemap
 from event_scrapper_srt.event import Event
 
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
+GANCIO_URL = 'http://127.0.0.1:13120'
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    events = scrapper.get_events(sitemap.get_urls(SITEMAP_URL))
+    parser = argparse.ArgumentParser(prog='event_scrapper_srt')
+    parser.add_argument(
+        '--sitemap-url',
+        default=SITEMAP_URL,
+        help='events are scrapped from here (default: %(default)s)',
+    )
+    parser.add_argument(
+        '--gancio-url', default=GANCIO_URL, help='events are published there (default: %(default)s)'
+    )
+    parser.add_argument(
+        '--output-dir',
+        default='output',
+        help='JSON with scrapped events is saved there (default: %(default)s)',
+    )
+    parser.add_argument(
+        '--max-events-publish',
+        type=int,
+        default=5,
+        help='publish maximum that many events to gancio (default: %(default)s)',
+    )
+    parser.add_argument(
+        '--no-confirm',
+        action='store_true',
+        help='do not ask for confirmation before publishing events',
+    )
+    args = parser.parse_args(argv)
 
-    dump_events_to_json(events, folder='output')
+    events = scrapper.get_events(sitemap.get_urls(args.sitemap_url))
+    dump_events_to_json(events, folder=args.output_dir)
+    gancio_events = gancio.create_events(events)
+    logging.info(f'Prepared {len(gancio_events)} Gancio events for publishing')
+
+    confirm = not args.no_confirm
+    if confirm:
+        if input(f'Continue with publishing events to `{args.gancio_url}` (y/N)? ') != 'y':
+            raise SystemExit('Aborting')
 
     # There is a default rate limiting 5 requests per 5 minutes, so we
     # iterate only on a few events
-    for event in gancio.create_events(events)[:5]:
-        response = gancio.add_event_requests(event, instance_url='http://127.0.0.1:13120')
+    for event in gancio_events[: args.max_events_publish]:
+        response = gancio.add_event_requests(event, instance_url=args.gancio_url)
         logging.info(f'Event added:\n{pformat(response)}')
         print(''.center(80, '-'))
     return 0
