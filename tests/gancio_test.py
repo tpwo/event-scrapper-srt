@@ -33,8 +33,8 @@ def test_prepare_gancio_event_skip_all(details, caplog):
     caplog.set_level(logging.INFO)
     actual = gancio.prepare_event(event=details, img_getter=get_image_mock)
     assert actual == []
-    assert 'Past event occurence found in scrapped' in caplog.text
-    assert 'Prepared 0 events for Gancio' in caplog.text
+    assert 'Past event occurence found' in caplog.text
+    assert 'No Gancio events created: no future `date_times` found' in caplog.text
 
 
 @freezegun.freeze_time('2024-07-10')
@@ -53,8 +53,8 @@ def test_prepare_gancio_event_no_date_times_found(caplog):
     actual = gancio.prepare_event(event=resources.example_event_past, img_getter=get_image_mock)
     assert actual == []
     assert (
-        'No Gancio events created: no `date_times` in scrapped '
-        '`Swingowa potańcówka nad Motławą`' in caplog.text
+        '[Swingowa potańcówka nad Motławą] No Gancio events created: '
+        'no future `date_times` found' in caplog.text
     )
 
 

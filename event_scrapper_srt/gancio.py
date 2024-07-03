@@ -37,7 +37,7 @@ def prepare_event(
     skipped = 0
     for dt in event.date_times:
         if dt.start < datetime.now(tz=dt.start.tzinfo):
-            logging.info(f'Past event occurence found in scrapped `{event.title}`')
+            logging.info(f'[{event.title}] Past event occurence found, skipping: {dt.start}')
             skipped += 1
             continue
         if dt.end:
@@ -62,11 +62,15 @@ def prepare_event(
             )
         )
     if not events:
-        logging.info(f'No Gancio events created: no `date_times` in scrapped `{event.title}`')
-    logging.info(f'Prepared {len(events)} events for Gancio')
-    if skipped > 0:
-        logging.info(f'Skipped {skipped} of {len(event.date_times)} scrapped occurrences')
-    return events
+        logging.info(f'[{event.title}] No Gancio events created: no future `date_times` found')
+        return []
+    else:
+        logging.info(f'[{event.title}] Prepared {len(events)} events for Gancio')
+        if skipped > 0:
+            logging.info(
+                f'[{event.title}] Skipped {skipped} of {len(event.date_times)} scrapped occurrences'
+            )
+        return events
 
 
 def add_event_requests(event: GancioEvent, instance_url: str) -> dict[str, object]:
