@@ -51,8 +51,10 @@ class GancioEvent:
     Documentation:
     https://gancio.org/dev/api#add-a-new-event
 
-    Note these differences between the API request and this dataclass:
-    - image_url is provided instead of image itself
+    **PLEASE NOTE** that documentation provided above seems to be
+    outdated, as it doesn't mention `image_url` field. However, when
+    provided to Gancio, it automatically downloads the image and
+    attaches it to the created event.
 
     Args:
 
