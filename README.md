@@ -37,7 +37,7 @@ Use `--help` to see available options.
 python -m event_scrapper_srt --help
 ```
 
-### Sample output with default arguments
+### Sample usage
 
 ```con
 $ python -m event_scrapper_srt --output-path output.json
