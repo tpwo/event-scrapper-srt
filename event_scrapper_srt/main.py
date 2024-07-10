@@ -11,7 +11,7 @@ from pprint import pformat
 from event_scrapper_srt import gancio
 from event_scrapper_srt import scrapper
 from event_scrapper_srt import sitemap
-from event_scrapper_srt.event import Event
+from event_scrapper_srt.event import GancioEvent
 
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 GANCIO_URL = 'http://127.0.0.1:13120'
@@ -47,8 +47,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     events = scrapper.get_events(sitemap.get_urls(args.sitemap_url))
-    dump_events_to_json(events, folder=args.output_dir)
     gancio_events = gancio.create_events(events)
+    dump_events_to_json(gancio_events, folder=args.output_dir)
     logging.info(f'Prepared {len(gancio_events)} Gancio events for publishing')
 
     confirm = not args.no_confirm
@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def dump_events_to_json(events: list[Event], folder: str) -> None:
+def dump_events_to_json(events: list[GancioEvent], folder: str) -> None:
     """Saves scrapped events to JSON for better traceability."""
     os.makedirs(folder, exist_ok=True)
     filename = f'{folder}/events_{datetime.now().isoformat()}.json'
