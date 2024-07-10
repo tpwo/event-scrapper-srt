@@ -73,7 +73,7 @@ def dump_events_to_json(events: list[GancioEvent], folder: str) -> None:
         for event in events:
             json.dump(asdict(event), file, indent=None, ensure_ascii=False, default=str)
             file.write('\n')
-    logging.info(f'Saved event details to `{filename}`')
+    logging.info(f'Saved {len(events)} to `{filename}`')
 
 
 if __name__ == '__main__':
