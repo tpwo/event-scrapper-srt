@@ -42,6 +42,9 @@ def dump_events_to_json(events: list[GancioEvent], output_path: str) -> None:
     """Saves scrapped events to Newline Delimited JSON."""
     path = Path(output_path)
 
+    if path.exists():
+        raise SystemExit(f'Error: `{path.absolute()}` already exists')
+
     if not path.parent.exists():
         path.parent.mkdir(parents=True)
         logging.info(f'Created folder `{path.parent.absolute()}`')
