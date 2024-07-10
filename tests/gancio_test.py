@@ -16,6 +16,7 @@ from testing import resources
         (resources.example_event_recurring, resources.example_event_recurring_gancio),
     ),
 )
+@freezegun.freeze_time('2024-07-01')
 def test_prepare_gancio_event(details, expected):
     actual = gancio.prepare_event(event=details, img_getter=get_image_mock)
     assert actual == expected
