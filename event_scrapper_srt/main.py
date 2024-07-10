@@ -26,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         '--output-path',
         default=f'output/{datetime.now().isoformat()}.json',
-        help='JSON with scrapped events is saved there (default: %(default)s)',
+        help='NDJSON with scrapped events is saved there (default: %(default)s)',
     )
     args = parser.parse_args(argv)
 

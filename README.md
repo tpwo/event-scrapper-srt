@@ -58,6 +58,14 @@ $ python -m event_scrapper_srt --output-path output.json
 2024-07-10 21:44:22,058 - INFO - Saved 16 events to `/home/tpwo/ws/event-scrapper-srt/output.json`
 ```
 
+### Output file structure
+
+Output file is [Newline Delimited JSON](https://github.com/ndjson/ndjson-spec) format which means. Each line has the following structure:
+
+```json
+{"title": "Lindy Hop dla początkujacych | intensywne warsztaty", "description": "<p>Daj się zarazić swingowym bakcylem...<snipped>", "place_name": "Studio Swing Revolution Trójmiasto", "place_address": "Łąkowa 35/38, Gdańsk", "online_locations": ["https://swingrevolution.pl/warsztaty-lindy-hop-od-podstaw/"], "start_datetime": 1722074400, "end_datetime": 1722085200, "multidate": 1, "tags": ["swing"], "image_url": "https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg"}
+```
+
 ## Development
 
 ### Run unit tests and static checks
