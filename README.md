@@ -77,7 +77,7 @@ $ python -m event_scrapper_srt > output.json
 2024-07-10 22:26:45,817 - INFO - [Practice & CHILL | Wersja FAST FEET] Prepared 3 events for Gancio
 2024-07-10 22:26:45,817 - INFO - [Trening Performance & Show | SPOTKANIE INFORMACYJNE] No Gancio events created: no future `date_times` found
 2024-07-10 22:26:45,817 - INFO - [Lindy Hop dla początkujacych | intensywne warsztaty] Prepared 1 events for Gancio
-2024-07-10 22:26:45,817 - INFO - In total prepared 7 events for Gancio
+2024-07-10 22:26:45,817 - INFO - In total prepared 16 events for Gancio
 2024-07-10 22:26:45,817 - INFO - Dumping output to stdout...
 ```
 

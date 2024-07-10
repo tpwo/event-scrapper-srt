@@ -26,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
 
     events = scrapper.get_events(sitemap.get_urls(args.sitemap_url))
     gancio_events = gancio.create_events(events)
-    logging.info(f'In total prepared {len(events)} events for Gancio')
+    logging.info(f'In total prepared {len(gancio_events)} events for Gancio')
     logging.info('Dumping output to stdout...')
 
     dump_events_to_json(gancio_events)
