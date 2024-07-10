@@ -66,13 +66,13 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def dump_events_to_json(events: list[GancioEvent], folder: str) -> None:
-    """Saves scrapped events to JSON for better traceability."""
+    """Saves scrapped events to Newline Delimited JSON."""
     os.makedirs(folder, exist_ok=True)
     filename = f'{folder}/events_{datetime.now().isoformat()}.json'
     with open(filename, 'w', encoding='utf-8') as file:
-        json.dump(
-            [asdict(event) for event in events], file, indent=4, ensure_ascii=False, default=str
-        )
+        for event in events:
+            json.dump(asdict(event), file, indent=None, ensure_ascii=False, default=str)
+            file.write('\n')
     logging.info(f'Saved event details to `{filename}`')
 
 
