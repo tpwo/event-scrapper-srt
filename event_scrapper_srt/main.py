@@ -3,9 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 from dataclasses import asdict
 from datetime import datetime
+from pathlib import Path
 from pprint import pformat
 
 from event_scrapper_srt import gancio
@@ -29,8 +29,8 @@ def main(argv: list[str] | None = None) -> int:
         '--gancio-url', default=GANCIO_URL, help='events are published there (default: %(default)s)'
     )
     parser.add_argument(
-        '--output-dir',
-        default='output',
+        '--output-path',
+        default=f'output/{datetime.now().isoformat()}.json',
         help='JSON with scrapped events is saved there (default: %(default)s)',
     )
     parser.add_argument(
@@ -48,7 +48,7 @@ def main(argv: list[str] | None = None) -> int:
 
     events = scrapper.get_events(sitemap.get_urls(args.sitemap_url))
     gancio_events = gancio.create_events(events)
-    dump_events_to_json(gancio_events, folder=args.output_dir)
+    dump_events_to_json(gancio_events, output_path=args.output_path)
     logging.info(f'Prepared {len(gancio_events)} Gancio events for publishing')
 
     confirm = not args.no_confirm
@@ -65,15 +65,19 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def dump_events_to_json(events: list[GancioEvent], folder: str) -> None:
+def dump_events_to_json(events: list[GancioEvent], output_path: str) -> None:
     """Saves scrapped events to Newline Delimited JSON."""
-    os.makedirs(folder, exist_ok=True)
-    filename = f'{folder}/events_{datetime.now().isoformat()}.json'
-    with open(filename, 'w', encoding='utf-8') as file:
+    path = Path(output_path)
+
+    if not path.parent.exists():
+        path.parent.mkdir(parents=True)
+        logging.info(f'Created folder `{path.parent.absolute()}`')
+
+    with open(path, 'w', encoding='utf-8') as file:
         for event in events:
             json.dump(asdict(event), file, indent=None, ensure_ascii=False, default=str)
             file.write('\n')
-    logging.info(f'Saved {len(events)} to `{filename}`')
+    logging.info(f'Saved {len(events)} to `{path.absolute()}`')
 
 
 if __name__ == '__main__':
