@@ -1,6 +1,6 @@
 # Event Scrapper SRT
 
-Event Scrapper for <https://swingrevolution.pl/> which then can publish them to a [Gancio](https://gancio.org/) instance.
+Event Scrapper for <https://swingrevolution.pl/>.
 
 ## How to run?
 
