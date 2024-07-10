@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import logging
 import urllib
-from collections.abc import Callable
 from dataclasses import asdict
 from datetime import datetime
 
@@ -11,7 +10,6 @@ import requests
 
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import GancioEvent
-from event_scrapper_srt.util import get_url_content
 
 
 def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
@@ -23,16 +21,12 @@ def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
 
 
 def prepare_event(
-    event: Event, img_getter: Callable[[str], bytes] = get_url_content
+    event: Event,
 ) -> list[GancioEvent]:
     """Prepares one or more Gancio event from a single scrapped event.
 
     Skips past events.
     """
-    if event.image_url:
-        image = img_getter(event.image_url)
-    else:
-        image = None
     events = []
     skipped = 0
     for dt in event.date_times:
@@ -58,7 +52,7 @@ def prepare_event(
                 # incorrectly added.
                 multidate=1,
                 tags=['swing'],
-                image=image,
+                image_url=event.image_url,
             )
         )
     if not events:
@@ -97,8 +91,7 @@ def add_event_requests(event: GancioEvent, instance_url: str) -> dict[str, objec
         'multidate': 1,
         # 'tags': event.tags,
     }
-    files = {'image': ('image', event.image, 'application/octet-stream')}
-    response = requests.post(url, data=data, files=files)  # type: ignore[arg-type]
+    response = requests.post(url, data=data)
 
     response.raise_for_status()
 

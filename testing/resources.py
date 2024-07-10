@@ -37,7 +37,7 @@ example_event_gancio = [
         end_datetime=1722085200,
         multidate=1,
         tags=['swing'],
-        image=b'',
+        image_url='https://swingrevolution.pl/wp-content/uploads/2022/04/351150267_646835474155254_2037209978322475013_n.jpg',
     )
 ]
 
@@ -78,7 +78,7 @@ example_event_recurring_gancio = [
         end_datetime=1720386000,
         multidate=1,
         tags=['swing'],
-        image=b'',
+        image_url='https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
     ),
     GancioEvent(
         title='Sunday Summer Night | CONIEDZIELNA POTAŃCÓWKA',
@@ -90,7 +90,7 @@ example_event_recurring_gancio = [
         end_datetime=1720990800,
         multidate=1,
         tags=['swing'],
-        image=b'',
+        image_url='https://swingrevolution.pl/wp-content/uploads/2024/06/448471294_881076660731133_508893191348552274_n.jpg',
     ),
 ]
 

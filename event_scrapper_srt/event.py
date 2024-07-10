@@ -44,10 +44,15 @@ class Occurrence:
 
 @dataclass(frozen=True)
 class GancioEvent:
-    """API request used to create a new event in Gancio.
+    """Represents a single Gancio event.
+
+    Structure is based on the API request used to create a new event in Gancio.
 
     Documentation:
     https://gancio.org/dev/api#add-a-new-event
+
+    Note these differences between the API request and this dataclass:
+    - image_url is provided instead of image itself
 
     Args:
 
@@ -62,7 +67,7 @@ class GancioEvent:
         multidate: 0 or 1 represeting whether the event spans over multiple
                    days. *Currently* always set to 1.
         tags: List of tags associated with the event.
-        image: The image associated with the event as bytes. `None` if not available.
+        image_url: The URL of the image associated with the event.
     """
 
     title: str
@@ -74,4 +79,4 @@ class GancioEvent:
     end_datetime: int | None
     multidate: int
     tags: list[str]
-    image: bytes | None
+    image_url: str | None

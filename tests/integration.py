@@ -48,16 +48,7 @@ def test_add_event(gancio_instance):
             'end_datetime': '1722085200',
             'recurrent': None,
             'is_visible': False,
-            'media': [
-                {
-                    'url': '9f9e80aabd602969655156d6ebe94670.jpg',
-                    'height': 628,
-                    'width': 1200,
-                    'name': 'Lindy Hop dla początkujacych | intensywne warsztaty',
-                    'size': 227552,
-                    'focalpoint': [0, 0],
-                }
-            ],
+            'media': [],
             'updatedAt': '2024-06-30T20:23:57.641Z',
             'createdAt': '2024-06-30T20:23:57.627Z',
             'slug': 'lindy-hop-dla-poczatkujacych-or-intensywne-warsztaty-4',
