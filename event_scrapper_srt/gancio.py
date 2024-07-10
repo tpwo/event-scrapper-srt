@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import json
 import logging
-import urllib
+import urllib.request
 from dataclasses import asdict
 from datetime import datetime
-
-import requests
 
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import GancioEvent
@@ -67,39 +65,8 @@ def prepare_event(
         return events
 
 
-def add_event_requests(event: GancioEvent, instance_url: str) -> dict[str, object]:
-    """Add an event to Gancio using the requests library.
-
-    Args:
-        event: The event to be added.
-        instance_url: The URL and port of the Gancio instance, e.g.
-                      `http://127.0.0.1:13120` for local running.
-
-    TODO:
-    - issue with tags, 500 server error, it worked with urllib
-    - issue with online_locations, it creates a location per character (!)
-    """
+def add_event(event: GancioEvent, instance_url: str) -> dict[str, object]:
     url = f'{instance_url}/api/event'
-    data = {
-        'title': event.title,
-        'description': event.description,
-        'place_name': event.place_name,
-        'place_address': event.place_address,
-        # 'online_locations': event.online_locations[0],
-        'start_datetime': event.start_datetime,
-        'end_datetime': event.end_datetime,
-        'multidate': 1,
-        # 'tags': event.tags,
-    }
-    response = requests.post(url, data=data)
-
-    response.raise_for_status()
-
-    return response.json()
-
-
-def add_event(event: GancioEvent) -> dict[str, object]:
-    url = 'http://127.0.0.1:13120/api/event'
     data = json.dumps(asdict(event)).encode()
     headers = {'Content-Type': 'application/json'}
     resp = urllib.request.urlopen(

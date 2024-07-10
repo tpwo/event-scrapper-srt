@@ -59,7 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     # There is a default rate limiting 5 requests per 5 minutes, so we
     # iterate only on a few events
     for event in gancio_events[: args.max_events_publish]:
-        response = gancio.add_event_requests(event, instance_url=args.gancio_url)
+        response = gancio.add_event(event, instance_url=args.gancio_url)
         logging.info(f'Event added:\n{pformat(response)}')
         print(''.center(80, '-'))
     return 0
