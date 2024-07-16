@@ -28,6 +28,7 @@ extend-select = [
     "TID",
     "TCH",
     "ARG",
+    "TD",
 ]
 ignore = [
     "D100",
