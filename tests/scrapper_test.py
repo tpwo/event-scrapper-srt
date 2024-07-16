@@ -11,10 +11,10 @@ from testing import resources
 
 @pytest.mark.parametrize(
     ('url', 'expected'),
-    (
+    [
         ('example-event.html', [resources.example_event]),
         ('example-event-recurring.html', [resources.example_event_recurring]),
-    ),
+    ],
 )
 def test_get_events(url, expected, caplog):
     caplog.set_level(logging.INFO)
@@ -26,7 +26,9 @@ def test_get_events(url, expected, caplog):
 
 @pytest.mark.parametrize(
     ('url', 'expected'),
-    (('example-event-past.html', [resources.example_event_past]),),
+    [
+        ('example-event-past.html', [resources.example_event_past]),
+    ],
 )
 def test_get_events_past(url, expected, caplog):
     caplog.set_level(logging.INFO)

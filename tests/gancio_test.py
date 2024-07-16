@@ -11,10 +11,10 @@ from testing import resources
 
 @pytest.mark.parametrize(
     ('details', 'expected'),
-    (
+    [
         (resources.example_event, resources.example_event_gancio),
         (resources.example_event_recurring, resources.example_event_recurring_gancio),
-    ),
+    ],
 )
 @freezegun.freeze_time('2024-07-01')
 def test_prepare_gancio_event(details, expected):
@@ -24,10 +24,10 @@ def test_prepare_gancio_event(details, expected):
 
 @pytest.mark.parametrize(
     ('details'),
-    (
+    [
         resources.example_event,
         resources.example_event_recurring,
-    ),
+    ],
 )
 @freezegun.freeze_time('2025-01-01')
 def test_prepare_gancio_event_skip_all(details, caplog):

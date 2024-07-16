@@ -19,7 +19,7 @@ from event_scrapper_srt import gancio
 from testing.resources import example_event
 
 
-@pytest.fixture
+@pytest.fixture()
 def gancio_instance(tmp_path):
     shutil.copytree('testing/gancio', tmp_path / 'gancio')
     out = subprocess.run(
@@ -83,14 +83,17 @@ def test_add_event(gancio_instance):
                 continue
             assert actual[key] == expected[key]
 
-        assert isinstance(actual['media'], list) and isinstance(expected['media'], list)
-        assert isinstance(actual['media'][0], dict) and isinstance(expected['media'][0], dict)
+        assert isinstance(actual['media'], list)
+        assert isinstance(expected['media'], list)
+        assert isinstance(actual['media'][0], dict)
+        assert isinstance(expected['media'][0], dict)
         for media_key in actual['media'][0]:
             if expected['media'][0][media_key] == NOT_COMPARABLE:
                 continue
             assert actual['media'][0][media_key] == expected['media'][0][media_key]
 
-        assert isinstance(actual['place'], dict) and isinstance(expected['place'], dict)
+        assert isinstance(actual['place'], dict)
+        assert isinstance(expected['place'], dict)
         for place_key in actual['place']:
             if expected['place'][place_key] == NOT_COMPARABLE:
                 continue
