@@ -36,7 +36,7 @@ def gancio_instance(tmp_path):
 NOT_COMPARABLE = 'NOT_COMPARABLE'
 
 
-def test_add_event(gancio_instance):
+def test_add_event(gancio_instance):  # noqa: ARG001
     gancio_event = gancio.prepare_event(example_event)
     for event in gancio_event:
         expected = {

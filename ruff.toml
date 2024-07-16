@@ -27,6 +27,7 @@ extend-select = [
     "SLOT",
     "TID",
     "TCH",
+    "ARG",
 ]
 ignore = [
     "D100",
