@@ -9,7 +9,7 @@ class Event:
     """Event details extracted from the website.
 
     Args:
-
+    ----
         url: The URL of the event.
         title: Event name.
         description: HTML-compatible description of the event.
@@ -18,6 +18,7 @@ class Event:
         image_url: The URL of the image associated with the event.
         date_times: A list of event occurrence times. A single element
                     list if event is not recurring.
+
     """
 
     url: str
@@ -34,8 +35,10 @@ class Occurrence:
     """Event occurence time details.
 
     Args:
+    ----
         start: The start date and time of the event.
         end: The end date and time of the event. `None` if not available.
+
     """
 
     start: datetime
@@ -57,7 +60,7 @@ class GancioEvent:
     attaches it to the created event.
 
     Args:
-
+    ----
         title: Event name.
         description: HTML-compatible description of the event.
         place_name: The name of the place where the event takes place.
@@ -70,6 +73,7 @@ class GancioEvent:
                    days. *Currently* always set to 1.
         tags: List of tags associated with the event.
         image_url: The URL of the image associated with the event.
+
     """
 
     title: str

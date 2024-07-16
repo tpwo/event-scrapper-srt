@@ -11,7 +11,7 @@ from event_scrapper_srt.event import GancioEvent
 
 
 def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
-    """Returns objects representing future events for Gancio based on scrapped events."""
+    """Return objects representing future events for Gancio based on scrapped events."""
     events = []
     for scrapped in scrapped_events:
         events.extend(prepare_event(scrapped))
@@ -21,7 +21,7 @@ def create_events(scrapped_events: list[Event]) -> list[GancioEvent]:
 def prepare_event(
     event: Event,
 ) -> list[GancioEvent]:
-    """Prepares one or more Gancio event from a single scrapped event.
+    """Prepare one or more Gancio event from a single scrapped event.
 
     Skips past events.
     """

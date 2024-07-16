@@ -15,7 +15,7 @@ from event_scrapper_srt import util
 def get_urls(
     sitemap_url: str, content_getter: Callable[[str], bytes] = util.get_url_content
 ) -> list[str]:
-    """Extracts event URLs from the provided sitemap URL."""
+    """Extract event URLs from the provided sitemap URL."""
     xml_content = content_getter(sitemap_url)
     return [sm.url for sm in get_elements(xml_content)]
 
@@ -25,12 +25,13 @@ class SitemapElem:
     """An entry in the events sitemap.
 
     Args:
-
+    ----
         url: The URL of the event.
         lastmod: The last modification date of the event in the format
                  `YYYY-MM-DDTHH:MM:SS+00:00`.
 
     https://swingrevolution.pl/events-sitemap.xml
+
     """
 
     url: str
@@ -38,12 +39,13 @@ class SitemapElem:
 
 
 def get_elements(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem]:
-    """Extracts event URLs and lastmod dates from the sitemap XML content.
+    """Extract event URLs and lastmod dates from the sitemap XML content.
 
     Sitemap displays the events from the oldest to the newest, so we
     reverse the list at the end.
 
     Args:
+    ----
         xml_content: The XML content of the sitemap.
         max_age_days: The maximum age of the event in days. Events older
         than this will be skipped.

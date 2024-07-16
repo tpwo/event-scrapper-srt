@@ -105,7 +105,7 @@ def _extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
 
 
 def _extract_date_time(soup: BeautifulSoup, tzinfo: ZoneInfo) -> Occurrence:
-    """Extracts date and start and end time from the provided string.
+    """Extract date and start and end time from the provided string.
 
     The HTML looks like this:
 
