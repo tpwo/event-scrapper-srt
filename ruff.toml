@@ -20,6 +20,12 @@ extend-select = [
     "DTZ",
     "ISC",
     "LOG",
+    "INP",
+    "PIE",
+    "RSE",
+    "SLF",
+    "SLOT",
+    "TID",
 ]
 ignore = [
     "D100",

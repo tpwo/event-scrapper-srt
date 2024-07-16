@@ -64,7 +64,7 @@ def get_elements(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem
     events = []
 
     for elem in reversed(elements):
-        assert isinstance(elem, etree._Element)
+        assert isinstance(elem, etree._Element)  # noqa: SLF001
         url = _get_xpath_value(elem, 'ns:loc/text()', ns)
         lastmod = _get_xpath_value(elem, 'ns:lastmod/text()', ns)
         try:
