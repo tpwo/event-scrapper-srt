@@ -24,6 +24,14 @@ class _Header:
     DESCRIPTION = 'Trochę szczegółów'
 
 
+class NotFoundError(Exception):
+    """Error raised if information is not found in provided HTML."""
+
+    def __init__(self, name: str, soup: BeautifulSoup):
+        msg = f'{name} details not found in the provided HTML content: `{soup}`'
+        super().__init__(msg)
+
+
 def get_events(
     urls: list[str], content_getter: Callable[[str], bytes] = util.get_url_content
 ) -> list[Event]:
@@ -44,7 +52,7 @@ def _extract_event_details(html_content: str, url: str) -> Event:
 
     try:
         date_times = _get_date_times(soup)
-    except ValueError:
+    except NotFoundError:
         date_times = []
         logging.info(f'[{title}] No date and time information found')
 
@@ -62,7 +70,7 @@ def _extract_event_details(html_content: str, url: str) -> Event:
 def _get_title(soup: BeautifulSoup) -> str:
     for elem in soup.find_all('h1'):
         return elem.text.strip()
-    raise ValueError(f'Title not found in the provided HTML content: `{soup}`')
+    raise NotFoundError('Title', soup)
 
 
 def _get_description(soup: BeautifulSoup) -> str:
@@ -81,7 +89,7 @@ def _get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
             place_section = place_section_raw.text.lstrip('`').strip()
             place_name_raw, _, place_address_raw = place_section.partition(',')
             return place_name_raw.strip(), place_address_raw.strip()
-    raise ValueError(f'Place details not found in the provided HTML content: `{soup}`')
+    raise NotFoundError('Place', soup)
 
 
 def _get_image_url(soup: BeautifulSoup) -> str | None:
@@ -96,7 +104,7 @@ def _get_date_times(soup: BeautifulSoup) -> list[Occurrence]:
     for elem in soup.find_all('h5'):
         if _Header.DATE_TIMES in elem.text:
             return _extract_date_times(elem.parent.find_all('p'))
-    raise ValueError(f'Time details not found in the provided HTML content: `{soup}`')
+    raise NotFoundError('Time', soup)
 
 
 def _extract_date_times(p_elems: list[BeautifulSoup]) -> list[Occurrence]:
@@ -172,7 +180,8 @@ def _parse_polish_date(date_str: str) -> datetime:
                 date_str.replace(pl_month, f'{month_num:02}'),
                 '%d %m %Y',
             ).replace(tzinfo=ZoneInfo('Europe/Warsaw'))
-    raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
+    msg = f'Polish month name not found in the provided date string: {date_str}'
+    raise ValueError(msg)
 
 
 def _get_time(time_str: str) -> time:
