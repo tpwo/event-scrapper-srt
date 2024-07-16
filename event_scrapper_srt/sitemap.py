@@ -83,9 +83,9 @@ def get_elements(xml_content: bytes, max_age_days: int = 30) -> list[SitemapElem
 
 
 def _get_xpath_value(elem: etree._Element, path: str, namespace: dict[str, str]) -> str:
-    all = elem.xpath(path, namespaces=namespace)
-    assert isinstance(all, Sequence)
-    return str(all[0])
+    all_ = elem.xpath(path, namespaces=namespace)
+    assert isinstance(all_, Sequence)
+    return str(all_[0])
 
 
 def _event_older_than(dt: datetime, max_age_days: int) -> bool:
