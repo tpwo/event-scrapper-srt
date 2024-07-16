@@ -32,6 +32,9 @@ extend-select = [
     "ERA",
     "PGH",
     "TRY",
+    "FLY",
+    "FURB",
+    "RUF",
 ]
 ignore = [
     "D100",
@@ -42,4 +45,5 @@ ignore = [
     "D213",
     "E501",
     "ISC001",
+    "RUF001",
 ]
