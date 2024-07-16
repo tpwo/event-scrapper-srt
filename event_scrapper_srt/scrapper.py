@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable
 from datetime import datetime
 from datetime import time
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
@@ -11,6 +11,9 @@ from bs4 import BeautifulSoup
 from event_scrapper_srt import util
 from event_scrapper_srt.event import Event
 from event_scrapper_srt.event import Occurrence
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class _Header:

@@ -5,11 +5,14 @@ import json
 import logging
 import sys
 from dataclasses import asdict
+from typing import TYPE_CHECKING
 
 from event_scrapper_srt import gancio
 from event_scrapper_srt import scrapper
 from event_scrapper_srt import sitemap
-from event_scrapper_srt.event import GancioEvent
+
+if TYPE_CHECKING:
+    from event_scrapper_srt.event import GancioEvent
 
 SITEMAP_URL = 'https://swingrevolution.pl/events-sitemap.xml'
 
