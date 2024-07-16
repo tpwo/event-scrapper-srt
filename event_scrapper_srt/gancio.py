@@ -32,10 +32,7 @@ def prepare_event(
             logging.info(f'[{event.title}] Past event occurence found, skipping: {dt.start}')
             skipped += 1
             continue
-        if dt.end:
-            end_datetime = int(dt.end.timestamp())
-        else:
-            end_datetime = None
+        end_datetime = int(dt.end.timestamp()) if dt.end else None
         events.append(
             GancioEvent(
                 title=event.title,

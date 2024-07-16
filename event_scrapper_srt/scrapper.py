@@ -64,22 +64,20 @@ def _get_title(soup: BeautifulSoup) -> str:
 
 def _get_description(soup: BeautifulSoup) -> str:
     for elem in soup.find_all('h4'):
-        if _Header.DESCRIPTION in elem.text:
-            if raw := elem.parent.find('p'):
-                return ' '.join(raw.decode_contents().strip().replace('\n', '').split())
+        if _Header.DESCRIPTION in elem.text and (raw := elem.parent.find('p')):
+            return ' '.join(raw.decode_contents().strip().replace('\n', '').split())
     logging.warning(f'Description not found in the provided HTML content: `{soup}`')
     return ''
 
 
 def _get_place_name_address(soup: BeautifulSoup) -> tuple[str, str]:
     for elem in soup.find_all('h5'):
-        if _Header.PLACE in elem.text:
-            if place_section_raw := elem.parent.find('p'):
-                # For some reason each time the place value starts with
-                # backtick, so we strip it
-                place_section = place_section_raw.text.lstrip('`').strip()
-                place_name_raw, _, place_address_raw = place_section.partition(',')
-                return place_name_raw.strip(), place_address_raw.strip()
+        if _Header.PLACE in elem.text and (place_section_raw := elem.parent.find('p')):
+            # For some reason each time the place value starts with
+            # backtick, so we strip it
+            place_section = place_section_raw.text.lstrip('`').strip()
+            place_name_raw, _, place_address_raw = place_section.partition(',')
+            return place_name_raw.strip(), place_address_raw.strip()
     raise ValueError(f'Place details not found in the provided HTML content: `{soup}`')
 
 
