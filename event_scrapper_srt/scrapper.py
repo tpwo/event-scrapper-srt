@@ -165,7 +165,10 @@ _MONTHS_PL = {
 def _parse_polish_date(date_str: str) -> datetime:
     for pl_month, month_num in _MONTHS_PL.items():
         if pl_month in date_str:
-            return datetime.strptime(date_str.replace(pl_month, f'{month_num:02}'), '%d %m %Y')
+            return datetime.strptime(
+                date_str.replace(pl_month, f'{month_num:02}'),
+                '%d %m %Y',
+            ).replace(tzinfo=ZoneInfo('Europe/Warsaw'))
     raise ValueError(f'Polish month name not found in the provided date string: {date_str}')
 
 
