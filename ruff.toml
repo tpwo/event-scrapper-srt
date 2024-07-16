@@ -4,5 +4,29 @@ line-length = 100
 quote-style = "single"
 
 [lint]
-extend-select = ["E", "F", "W", "UP", "B", "SIM", "PT", "D", "N", "FBT", "A", "C4", "DTZ"]
-ignore = ["E501", "D100", "D103", "D104", "D203", "D213"]
+extend-select = [
+    "E",
+    "F",
+    "W",
+    "UP",
+    "B",
+    "SIM",
+    "PT",
+    "D",
+    "N",
+    "FBT",
+    "A",
+    "C4",
+    "DTZ",
+    "ISC",
+    "LOG",
+]
+ignore = [
+    "D100",
+    "D103",
+    "D104",
+    "D203",
+    "D213",
+    "E501",
+    "ISC001",
+]
