@@ -2,6 +2,8 @@
 
 Event Scrapper for <https://swingrevolution.pl/>.
 
+**Update: SRT was closed at the beginning of 2025, so this repo is now archived.**
+
 ## How to run?
 
 ### Prerequsites
